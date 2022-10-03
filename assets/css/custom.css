@@ -1,0 +1,11 @@
+:root{
+--maincolor: #556F44;
+--bordercl:#95BF74;
+--callouctcolor:#95BF74;
+--hovercolor:#659B5E;
+--darkMaincolor: #95BF74;
+}
+
+footer {
+  border-top: 0.2em dotted var(--bordercl);
+}

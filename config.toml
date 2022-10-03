@@ -1,0 +1,49 @@
+baseURL = 'https://log.woodweb.ca/'
+languageCode = 'en-us'
+title = 'Wood Wide Log'
+copyright = "Daniel McCarney"
+enableEmoji = true
+theme = "archie"
+#enableGitInfo = true
+
+[markup]
+  [markup.highlight]
+    style = 'monokai'
+    tabwidth = 2
+  [markup.goldmark.renderer]
+    unsafe = false
+  [markup.tableOfContents]
+    endLevel = 2
+    ordered = false
+    startLevel = 1
+
+[params]
+  customcss = ["css/custom.css"]
+
+[[params.social]]
+  name = "GitHub"
+  icon = "github"
+  url = "https://github.com/cpu/woodwidelog"
+
+[[params.social]]
+  name = "Twitter"
+  icon = "twitter"
+  url = "https://twitter.com/cpu/"
+
+[permalinks]
+  posts = '/:year/:month/:title'
+
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "Archive"
+  url = "/posts"
+  weight = 2
+
+[[menu.main]]
+  name = "About"
+  url = "/about"
+  weight = 3
