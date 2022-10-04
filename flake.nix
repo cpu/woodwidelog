@@ -35,7 +35,6 @@
             buildPhase = ''
               runHook preBuild
               mkdir -p $out
-              cd site
               hugo --minify --destination $out
               runHook postBuild
             '';
