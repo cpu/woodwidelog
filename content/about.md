@@ -5,9 +5,9 @@ date = "2022-10-02"
 aliases = ["contact"]
 +++
 
-An attempt at a journal slash dev. log by [@cpu](https://twitter.com).
+An attempt at a journal slash dev log by [@cpu](https://twitter.com).
 
-I like: Go, Cryptography, mountain bikes, ACME, computer security, mushrooms,
+I like: Go, cryptography, mountain bikes, ACME, computer security, mushrooms,
 Nix/NixOS, death|black metal, Linux, skateboards, DNS, snowboards, Wireguard,
 living in the woods, MUDs, LPC, & other people's dev logs.
 

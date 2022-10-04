@@ -69,8 +69,8 @@ workflow] that publishes the site is pinned to the exact version of Hugo and the
 theme I'm using in my local env. Big thanks to [Fernando Ayats]'s "[static blog
 with hugo and nix flakes]" post for offering a great starting point to adapt.
 
-Here's hoping all these shaved yaks make it easier to write the next post
-:clown:.
+Here's hoping all these shaved yaks make it easier to write the next post.
+:clown:
 
 [VeXation]: https://log.vexation.ca
 [qemu]: https://www.qemu.org/
