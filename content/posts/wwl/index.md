@@ -1,7 +1,7 @@
 ---
 title: "WWL"
 summary: Starting. Fall. LDMud. VeXation.
-date: 2022-10-04T19:00:00-04:00
+date: 2022-10-04T12:00:00-04:00
 ---
 
 # Starting
