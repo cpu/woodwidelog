@@ -36,7 +36,6 @@ jobs:
                  --cache \
                  --max-cache-age 1d \
                  --exclude-mail \
-                 --exclude='https://twitter\\.com/.*' \
                  'result/**/*.md' 'result/**/*.html'"
           fail: true
         env:
