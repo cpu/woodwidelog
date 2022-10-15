@@ -49,7 +49,7 @@
         devShells.default = pkgs.mkShellNoCC {
           name = "woodwidelog";
           inputsFrom = [ self'.packages.default ];
-          buildInputs = [ pkgs.exiftool ];
+          buildInputs = [ pkgs.exiftool pkgs.lychee ];
           HUGO_THEMESDIR = self'.packages.themes;
         };
       };
