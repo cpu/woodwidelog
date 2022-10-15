@@ -18,6 +18,7 @@ theme = "archie"
     startLevel = 1
 
 [params]
+  description = "An attempt at a journal slash dev log by @cpu."
   customcss = ["css/custom.css"]
 
 [[params.social]]

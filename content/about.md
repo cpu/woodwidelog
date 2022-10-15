@@ -1,6 +1,6 @@
 +++
 title = "About"
-description = "What the Wood Wide Log is about."
+description = "An attempt at a journal slash dev log by @cpu."
 date = "2022-10-02"
 aliases = ["contact"]
 +++
