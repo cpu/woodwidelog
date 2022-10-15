@@ -92,7 +92,7 @@ compare to the approach I used.
   least intimidating killer robot designs you could imagine. It's a flop of
   a movie, but I really dig the late 80s mall setting.
 * [Hello World under the microscope][microscope]. This work makes other "deep
-  dives" look awfully shallow in comparison. Layers after layer of abstractions
+  dives" look awfully shallow in comparison. Layer after layer of abstractions
   peeled away. :microscope:
 * [Fingerprinting systems with TCP source-port selection][fingerprinting].
   A really clever bit of research. It's interesting to see a defensive mechanism
