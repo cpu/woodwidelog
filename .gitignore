@@ -3,6 +3,7 @@
 /resources/_gen/
 /assets/jsconfig.json
 hugo_stats.json
+*_original
 
 # Temporary lock file while building
 /.hugo_build.lock
