@@ -20,7 +20,7 @@ theme = "archie"
 [params]
   description = "An attempt at a journal slash dev log by @cpu."
   customcss = ["css/custom.css"]
-  images = ["/2022/10/wwl/crow.jpg"]
+  images = ["/2022/10/wwl/crow.small.jpg"]
 
 [[params.social]]
   name = "GitHub"
