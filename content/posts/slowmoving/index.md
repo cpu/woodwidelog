@@ -4,8 +4,6 @@ summary: Butterfly. Blightmud. Bad movies.
 date: 2022-10-15T08:00:00-04:00
 ---
 
-# Slow Moving
-
 Its been hard to marshal energy to get up to much. The combination of changing
 weather, a birthday, and Thanksgiving in short succession makes me a bit of
 a slug. Rather than get too hung up on it I've been embracing :jack_o_lantern:
