@@ -66,8 +66,9 @@ straight-forward and the Go ecosystem is familiar in a way the JS ecosystem is
 not. This time around I also wrote [a Nix flake][vexation-flake] to make it
 super duper easy to reproduce the entire build environment. The Github [actions
 workflow] that publishes the site is pinned to the exact version of Hugo and the
-theme I'm using in my local env. Big thanks to [Fernando Ayats]'s "[static blog
-with hugo and nix flakes]" post for offering a great starting point to adapt.
+theme I'm using in my local env. Big thanks to [Fernando Ayats]'s "static blog
+with hugo and nix flakes" post (_edit: appears gone now!_) for offering a great
+starting point to adapt.
 
 Here's hoping all these shaved yaks make it easier to write the next post.
 :clown:
@@ -80,7 +81,6 @@ Here's hoping all these shaved yaks make it easier to write the next post.
 [vexation-flake]: https://github.com/cpu/vexation/blob/main/site/flake.nix
 [actions workflow]: https://github.com/cpu/vexation/blob/main/.github/workflows/deploy.yml
 [Fernando Ayats]: https://ayats.org/about/
-[static blog with hugo and nix flakes]: https://ayats.org/blog/flake-blog/
 
 # Thinking about
 
