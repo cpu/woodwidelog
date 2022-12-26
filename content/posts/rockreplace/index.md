@@ -86,8 +86,8 @@ environment with the dependencies Mudlet requires:
 It worked perfectly. :tada: No more undefined symbol trouble and Mudlet 4.16.0 is
 [now available][nixpkgs-search] in the NixPkgs unstable channel.
 
-**Bonus**: I also fixed the optional integration to let Mudlet set your [activity
-status] in Discord based on the MUD you're playing. Getting that working was just
+**Bonus**: I also fixed the optional integration to let Mudlet set your activity
+status in Discord based on the MUD you're playing. Getting that working was just
 a matter of wiring a dependency on `discord-rpc` through to the QT wrapper
 `LD_LIBRARY_PATH`.
 
@@ -102,7 +102,6 @@ a matter of wiring a dependency on `discord-rpc` through to the QT wrapper
 [lua-modules-overrides]: https://github.com/NixOS/nixpkgs/blob/fbec74286dd682720703fc455ec650c0a8552dbf/pkgs/development/lua-modules/overrides.nix#L352-L356
 [fix commit]: https://github.com/NixOS/nixpkgs/pull/199944/commits/ae5ed8ce226db3913adf7b1107487f53bd8c69da
 [nixpkgs-search]: https://search.nixos.org/packages?channel=unstable&show=mudlet&from=0&size=50&sort=relevance&type=packages&query=mudlet
-[activity status]: https://support.discord.com/hc/en-us/articles/7931156448919-Activity-Status-Rich-Presence-Settings
 
 # Thinking about
 
