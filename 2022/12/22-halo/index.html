@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>22° halo - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Moon ring, Prototext, Pentium III."><meta property="og:image" content><meta property="og:title" content="22° halo"><meta property="og:description" content="Moon ring, Prototext, Pentium III."><meta property="og:type" content="article"><meta property="og:url" content="https://log.woodweb.ca/2022/12/22-halo/"><meta property="og:image" content="https://log.woodweb.ca/2022/12/22-halo/feature.jpg"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-12-26T08:00:00-04:00"><meta property="article:modified_time" content="2022-12-26T08:00:00-04:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/12/22-halo/feature.jpg"><meta name=twitter:title content="22° halo"><meta name=twitter:description content="Moon ring, Prototext, Pentium III."><script src=https://log.woodweb.ca/js/feather.min.js></script>
+<link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.5ddc6ca3ae5231a84ed7d87d48dbac9e03a71fa553bd09ab71b3f207786c3b78.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Home</a>
+<a href=/posts>Archive</a>
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>22° halo</h1><div class=meta>Posted on Dec 26, 2022</div></div><section class=body><p>Living somewhere with a winter that&rsquo;s extreme even by Canadian standards has
+taught me a lot about how far reaching the cold can be. Its influence spans
+everything from the consistency of the snow you walk across to the way you
+perceive light. Last year I saw my first <a href=https://en.wikipedia.org/wiki/Sun_dog>Sun dog</a>, and this year I was lucky
+enough to catch the moon with a <a href=https://en.wikipedia.org/wiki/22%C2%B0_halo>22° halo</a>.</p><p><img src=./moon_halo.jpg alt="Moon halo"></p><h1 id=lately>Lately</h1><h2 id=protobuf-text-format-encoding>Protobuf Text Format Encoding</h2><p>It&rsquo;s not super well known, but <a href=https://developers.google.com/protocol-buffers>Protocol Buffers</a> have a human friendly <a href=https://developers.google.com/protocol-buffers/docs/text-format-spec>text
+format</a> with something approaching a formal spec<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>. This lets you write
+a schema for your data in typical <code>.proto</code> form, and encode/decode
+instances of data adhering to that schema expressed in a format very close to
+YAML. Being protobuf backed this works great in most major languages. The text
+format makes working with the data easy for humans and the schema makes working
+with the data easy for programs. This combination of strengths makes it a great
+choice for configuration files for projects that already depend on a protocol
+buffer compiler for some other reason (e.g. gRPC). In Go you can
+marshal/unmarshal to the text format using the
+<a href=https://google.golang.org/protobuf>google.golang.org/protobuf</a> project&rsquo;s <a href=https://pkg.go.dev/google.golang.org/protobuf/encoding/prototext>encoding/protobuf</a> package.
+I&rsquo;ve been using it for a few things recently and I hope you might find it useful
+too.</p><h2 id=pentium-iii-retro-build>Pentium III Retro Build</h2><p>This December I put together an early 2000s retro gaming PC for my partner as
+a Christmas gift. It was fun to source old parts from around my area and
+working with old hardware was super nostalgic. For the most part I stayed true
+to the era but for storage I replaced the contemporary spinning metal IDE drive
+with a SD card slotted into a cheap adapter board. This had two big advantages:</p><ol><li>It&rsquo;s super fast. Windows 98 SE runs like a champ.</li><li>It&rsquo;s easy to eject the SD card and mount it on a modern computer.</li></ol><p>That second advantage was a huge help with installing drivers and other software
+without having to make lots of floppy disks and CD ROMs.</p><p>For the spec nerds the machine is a slightly tuned up Dell Dimension 4100 (<em>I&rsquo;m
+a sucker for this era of Dell beige towers</em>) with a Pentium III clocked at
+866mhz, 256mb of PC 133mhz SDRAM, a Nvidia GeForce FX 5200 with 128mb of video
+ram, and an Audigy 2 ZS soundcard. It&rsquo;s running Windows 98 SE right now but
+should be able to run XP pretty decently too.</p><h1 id=thinking-about>Thinking about</h1><p><img src=./minirail.png alt=Minirail></p><ul><li><a href=https://www.cbc.ca/radio/thecurrent/montreal-minirail-demolition-1.6662944>The Lost Expo &lsquo;67 Minirail</a> - even though it was well before my
+time the influence of Expo &lsquo;67 on Montréal is unquestionable. How could you
+not adore these tiny minirail cars? RIP.</li><li><a href=https://www.youtube.com/@Bobsdecline>@Bobsdecline</a> - lately I&rsquo;m obsessed with these day-in-a-life videos from
+a Lineman working on the east coast. Combining high voltage electricity,
+heights, and winter weather leaves so little room for error.</li><li><a href=https://en.wikipedia.org/wiki/Doctor_V64>Doctor V64</a> - a cartridge backup device for the N64 from 1996 made by Bung
+Enterprises Ltd. I had no idea this kind of tech was ever marketed to
+consumers outside of niche homebrew/piracy circles. Strange & cool.</li></ul><h1 id=until-next-time>Until next time</h1><p><img src=./ice.jpg alt="Ice crystals"></p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>ok, so it&rsquo;s largely EBNF reverse-engineered from the C++ impl. That&rsquo;s
+<em>Good Enough</em> right?&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
+<a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
+<a class=border></a></div><div class=footer-info>2022 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>
