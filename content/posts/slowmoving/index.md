@@ -25,7 +25,7 @@ Most [MUD]s are played over Telnet, but using a vanilla Telnet client makes for
 a miserable experience. Serious enjoyment requires niceties like scripting and
 support for extra protocol additions like [GMCP], TLS, and [charset
 negotiation]. Some folks prefer graphical clients, and excellent free software
-like [Mudlet] has sprung up in recent years to offer a polished, multi-platform,
+like [Mudlet] have sprung up in recent years to offer a polished, multi-platform,
 graphical MUD client perfect for those people.
 
 Personally I've always preferred terminal clients because of how nicely they
