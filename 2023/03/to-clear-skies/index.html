@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>To Clear Skies - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Nix Flakes, deploy-rs, Blightspell."><meta property="og:image" content><meta property="og:title" content="To Clear Skies"><meta property="og:description" content="Nix Flakes, deploy-rs, Blightspell."><meta property="og:type" content="article"><meta property="og:url" content="https://log.woodweb.ca/2023/03/to-clear-skies/"><meta property="og:image" content="https://log.woodweb.ca/2023/03/to-clear-skies/feature.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-03-26T08:00:00-04:00"><meta property="article:modified_time" content="2023-03-26T08:00:00-04:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2023/03/to-clear-skies/feature.png"><meta name=twitter:title content="To Clear Skies"><meta name=twitter:description content="Nix Flakes, deploy-rs, Blightspell."><script src=https://log.woodweb.ca/js/feather.min.js></script>
+<link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.5ddc6ca3ae5231a84ed7d87d48dbac9e03a71fa553bd09ab71b3f207786c3b78.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Home</a>
+<a href=/posts>Archive</a>
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>To Clear Skies</h1><div class=meta>Posted on Mar 26, 2023</div></div><section class=body><p>Since February I&rsquo;ve been working on regaining my focus. It feels like something
+that used to come naturally but now takes deliberate action. With focus, I&rsquo;m
+returning more to habits and systems of work I felt stronger about before
+the influence of the broader tech industry led me down a road of making
+concessions. I won&rsquo;t pretend I don&rsquo;t have to modulate self-doubt, but at least
+there aren&rsquo;t any OKRs.</p><p><img src=./sky.png alt=Sky></p><h1 id=lately>Lately</h1><h2 id=nix-flakes>Nix Flakes</h2><p>I started using Nix and <a href=https://nixos.org/>NixOS</a> in early 2020. This meant I was <em>just</em> a little
+bit early for the introduction of <a href=https://www.tweag.io/blog/2020-05-25-flakes/>Nix Flakes</a>. As a result my primary
+configurations have always been using the classic &ldquo;channels&rdquo; approach. To
+criminally under-summarize, Nix flakes introduce some standardized structure
+that improves both the composability and reproducibility of the Nix ecosystem.</p><p>It didn&rsquo;t take long for the advantages of &ldquo;the flakes way&rdquo; to percolate into my
+brain enough that I started using flakes in smaller one-off projects (like
+<a href=https://github.com/cpu/woodwidelog/blob/main/flake.nix>this blog</a> for example) but I was still carrying around legacy baggage for my
+most important use-cases (laptop and server configurations). That&rsquo;s a shame,
+because flakes (while still experimental) are an obvious improvement over the
+status quo. Folks new to Nix are best served by skipping over the legacy world
+and moving right to flakes.</p><p>With more free time I finally got around to switching all of my legacy
+configurations to a flake based monorepo. In sum it was a super easy transition,
+even with <a href=https://github.com/nix-community/home-manager>Home Manager</a> and some custom pinning in the mix. If you&rsquo;re like me
+and have been holding off on making the switch you should take the plunge! It
+was less work than I expected and I&rsquo;m really happy with the convenience of
+managing a single <code>flake.lock</code> file for all of my laptop and server
+configurations. I&rsquo;d love to make my monorepo public but I still haven&rsquo;t found
+a nice way to elide bits of configuration that aren&rsquo;t runtime secrets favourable
+to <a href=https://github.com/Mic92/sops-nix>sops-nix</a>, but also feel icky to hang out in the open. If we know each other
+personally and you&rsquo;re looking for more Nix resources feel free to reach out and
+I can add you as a collaborator.</p><h2 id=deploy-rs>deploy-rs</h2><p>Of course, no migration is ever <em>totally</em> seamless.. While sketching out
+a transition to using Nix flakes I realized that the scheme I used to manage
+server configuration with NixOS needed to change too.</p><p>Historically I&rsquo;ve used <a href=https://github.com/NixOS/nixops>NixOps</a> as a Nix-based approximation of other
+server configuration tools like <a href=https://www.ansible.com/>Ansible</a>. Using NixOps I could describe
+system/service configurations in Nix, build the closures locally, and ship the
+required parts of the Nix cache to remote systems. While it worked well for
+me initially it hasn&rsquo;t aged gracefully. Development has mostly stalled and often
+the package is marked insecure, requiring <a href=https://nixos.org/manual/nixpkgs/stable/#sec-allow-insecure>annoying workarounds</a> to
+use. Ultimately the breaking point was the weak flake support and missing
+documentation.</p><p>I&rsquo;ve since switched to using <a href=https://github.com/serokell/deploy-rs>deploy-rs</a> and can&rsquo;t say enough nice things about
+it. It was minimal work to adapt my existing configurations into a flake that
+<code>deploy-rs</code> could use to shuffle specific <code>nixosConfigurations</code> off to remote
+machines. Flake support is top notch, and the Rust based tooling has a much
+smaller system footprint than the Python based NixOps environment. It also uses
+a clever &ldquo;dead-man&rsquo;s switch&rdquo; system to achieve <a href=https://github.com/serokell/deploy-rs#magic-rollback>magic rollback</a> to a previous
+configuration generation if the new generation fails to activate cleanly.</p><h2 id=blightspell>Blightspell</h2><p>It wouldn&rsquo;t be a wood wide log update if I didn&rsquo;t find a way to shoehorn in some
+MUD related content (see also <a href=https://log.woodweb.ca/2023/01/carcinisation/>carcinisation</a>, <a href=https://log.woodweb.ca/2022/10/slow-moving/>slow-moving</a>). In February
+I spent some time chasing the dream of a fancy spellchecking experience for
+<a href=https://github.com/blightmud/blightmud>Blightmud</a>, my terminal <a href=https://en.wikipedia.org/wiki/MUD>MUD</a> client of choice.</p><p>To achieve what I wanted I had to a handful of new Blightmud features including:</p><ul><li>callback support for when unsent data in the <a href="https://github.com/Blightmud/Blightmud/blob/6b4c5fefebddb31694140afa0e544bec4b276ab2/resources/help/prompt.md?plain=1#L39-L49">prompt area changes</a>.</li><li>a new module for manipulating <a href=https://github.com/Blightmud/Blightmud/blob/dev/resources/help/prompt_mask.md>a &ldquo;mask&rdquo;</a> for decorating unsent prompt
+data.</li><li>a new low-level <a href=https://github.com/Blightmud/Blightmud/blob/dev/resources/help/spellcheck.md>spellcheck</a> module that offers bindings on top of <a href=https://hunspell.github.io/>hunspell</a>.</li></ul><p>With those features landing in <a href=https://github.com/Blightmud/Blightmud/releases/tag/v5.1.0>Blightmud v5.1.0</a> it was possible to write
+<a href=https://github.com/cpu/blightspell>Blightspell</a>, a Lua plugin for Blightmud that implements real-time spellcheck.
+I&rsquo;m really happy with the end result! If you&rsquo;re a Blightmud user be sure to give
+it a try and let me know what you think :-)</p><p><a href=https://asciinema.org/a/uHAMcFnDaLxHbzqGxtJrwNCx0><img src=https://asciinema.org/a/uHAMcFnDaLxHbzqGxtJrwNCx0.svg alt=asciicast></a></p><h1 id=thinking-about>Thinking about</h1><ul><li><a href=https://github.com/miniflux/v2>Miniflux</a> - Until Google Reader was shutdown (RIP) I was a heavy user of
+<a href=https://en.wikipedia.org/wiki/RSS>RSS</a>. Since Twitter is being turned into dogshit by an egomaniac I&rsquo;ve come
+back to RSS as a way to stay on top of cool writing. Miniflux is a great
+self-hosted experience and it gets extra points being written in Go.</li><li><a href=https://bobvanderlinden.me/autosquash-in-git/>Autosquash in Git</a> - I&rsquo;m no stranger to <code>git rebase --interactive</code> but
+learning about autosquash from Bob Vanderlinden&rsquo;s blog has been
+a game-changer. Shout out to the developers that are meticulous about a clean
+and helpful <code>git log</code> - it&rsquo;s rarer than you would hope. 💔</li><li><a href=https://drew.shoes/posts/moving-the-posts/>Moving the Posts</a> - this post from Drew Schuster&rsquo;s blog lands squarely in the
+overlap of my continued interest in learning about the power grid and my
+experiences with system maintenance. You&rsquo;ll laugh, you&rsquo;ll cry, you&rsquo;ll
+bookmark.</li></ul><h1 id=until-next-time>Until next time</h1><p><img src=./tracks.png alt="Turkey Tracks"></p></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
+<a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
+<a class=border></a></div><div class=footer-info>2023 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>
