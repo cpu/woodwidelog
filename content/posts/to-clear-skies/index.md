@@ -86,7 +86,8 @@ MUD related content (see also [carcinisation], [slow-moving]). In February
 I spent some time chasing the dream of a fancy spellchecking experience for
 [Blightmud], my terminal [MUD] client of choice.
 
-To achieve what I wanted I had to a handful of new Blightmud features including:
+To achieve what I wanted I had to add a handful of new Blightmud features
+including:
 
 * callback support for when unsent data in the [prompt area changes].
 * a new module for manipulating [a "mask"][masking] for decorating unsent prompt
