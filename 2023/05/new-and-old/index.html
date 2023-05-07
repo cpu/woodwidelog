@@ -1,0 +1,95 @@
+<!doctype html><html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>New and Old - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Rustls, 30 year old LPC."><meta property="og:image" content><meta property="og:title" content="New and Old"><meta property="og:description" content="Rustls, 30 year old LPC."><meta property="og:type" content="article"><meta property="og:url" content="https://log.woodweb.ca/2023/05/new-and-old/"><meta property="og:image" content="https://log.woodweb.ca/2023/05/new-and-old/feature.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-05-07T08:00:00-04:00"><meta property="article:modified_time" content="2023-05-07T08:00:00-04:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2023/05/new-and-old/feature.png"><meta name=twitter:title content="New and Old"><meta name=twitter:description content="Rustls, 30 year old LPC."><script src=https://log.woodweb.ca/js/feather.min.js></script>
+<link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.5ddc6ca3ae5231a84ed7d87d48dbac9e03a71fa553bd09ab71b3f207786c3b78.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Home</a>
+<a href=/posts>Archive</a>
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>New and Old</h1><div class=meta>Posted on May 7, 2023</div></div><section class=body><p>Spring has sprung and it&rsquo;s a potent reminder of how much I value contrast.
+Moaning about the winter is a well established Canadian past-time but I&rsquo;ve
+realized I need four distinct seasons to feel right. For me it&rsquo;s easier to
+appreciate the small details that the change in seasons provides when the
+differences are so stark.</p><p><img src=./waves.png alt=Waves></p><h1 id=lately>Lately</h1><p>Recently I&rsquo;ve been having fun contrasting professional work at the edge
+of some important new trends with recreational work on code living on a very
+different timescale.</p><h2 id=rustls>Rustls</h2><p>On the side of modernity, for the past ~two months I&rsquo;ve been working on-contract
+for the <a href=https://www.abetterinternet.org/>ISRG</a>&rsquo;s <a href=https://www.memorysafety.org/>Prossimo</a> project on their memory-safety for TLS initiative.
+It&rsquo;s been a fun challenge to onboard both to professional Rust development and
+to the <a href=https://github.com/rustls/rustls>Rustls</a> ecosystem of projects at the same time. I believe strongly in
+the need for a memory safe alternative to OpenSSL and Rustls has so many unique
+advantages above-and-beyond being written in Rust. I&rsquo;m extremely grateful to
+have the opportunity to learn from the heavy-hitters that have made the project
+so strong.</p><h3 id=the-new-guy>The new guy</h3><p>Being new has meant finding creative ways to help out while still learning the
+ropes. So far I&rsquo;ve been able to pitch in with misc. tasks to help get <a href=https://www.memorysafety.org/blog/rustls-new-features/>Rustls
+0.21.0</a> out the door, helped clear up some issue/pull request backlog, fixed
+some old bugs, and adopted some in-progress work that needed more attention to
+get across the goal line. While not a massive technical achievement I&rsquo;m
+particularly happy to have landed a small <a href=https://github.com/rustls/webpki>webpki</a> crate <a href=https://github.com/rustls/webpki/pull/42>feature</a> for
+collecting certificate DNS subjects that has been carried along by ~3 other sets
+of people all the way back to 2017. A real team effort!</p><p>One day I&rsquo;d like to try and write down some of my strategies and thoughts about
+joining an open source project like Rustls but for now I&rsquo;m trying to get back on
+the blog train with some quick updates. Stay tuned. :-)</p><h3 id=blightmud>Blightmud</h3><p>Readers of my dev log know I can&rsquo;t resist talking about <a href=https://github.com/blightmud/blightmud>Blightmud</a> and of
+course I quickly found a way to combine my new energy for Rustls with my
+existing love of that project. Outside of work hours I <a href=https://github.com/Blightmud/Blightmud/pull/775>replaced</a> Blightmud&rsquo;s
+code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
+a spiritual win it ended up fixing a mysterious crash on MacOS that nobody had
+been able to diagnose. Replacing a separate libcurl based feature to use a pure
+Rust alternative also <a href=https://github.com/Blightmud/Blightmud/pull/782#issuecomment-1501197372>fixed</a> some long-standing flaky unit tests so it&rsquo;s no
+fluke! I can&rsquo;t overstate how pleasant I&rsquo;ve been finding Rust and its surrounding
+ecosystem.</p><h2 id=ldmud-upgrades>LDMud Upgrades</h2><p>At the complete other end of the spectrum I&rsquo;ve been working on upgrading
+<a href=https://dunemud.net/doku.php/start>a codebase</a> that started in 1993 to a modern <a href=http://www.ldmud.eu/>LDMud</a> release.</p><h2 id=background>Background</h2><p>I&rsquo;ve talked a little bit about LDMud in <a href=/2022/10/wwl/>a previous entry</a>. To keep things short
+and sweet you can think of it as a cross between a game engine like Unity or
+Unreal Engine, and a scripting language with a bytecode based VM like Python.
+Much of its existence can be understood through the lens of the early 1990s and
+the need to be able to support two important use-cases:</p><ol><li>Live reloading game content without recompilation or process restart.</li><li>Supporting development of game content by amateur developers.</li></ol><p>The first requirement comes from frustration working with traditional C based
+MUD codebases that were popular at the time. Adding new game content written in
+C required rebuilding the game (slow!) and restarting the process to pick up the
+changes (there go all your players, and anything in the game world that isn&rsquo;t
+persisted!).</p><p>The second requirement was similarly (at least in my mind) driven by
+frustrations with C. A monolithic C-based system left no room for programmer
+error. Simple mistakes inevitably lead to difficult to diagnose memory
+corruption bugs. Similarly most of the game designers and content contributors
+were learning to code for the first time. The combination of a <strong>very</strong> text
+heavy use case, C&rsquo;s poor support for string manipulation, and a bunch of novice
+programmers is a sure recipe for disaster.</p><h2 id=old-lpc-code>Old LPC Code</h2><p>The solution echoes trends in the rest of the industry. Use C for the heavy
+lifting, network programming, and interfacing with the operating system and
+embed a scripting language for the game content. The LP flavour of MUD arose
+around the development of <a href=https://handwiki.org/wiki/LPC_(programming_language)>LPC</a> as this scripting language and LD implements it by
+compiling LPC to a bytecode it runs in a bespoke virtual machine (much like Java
+bytecode and the JVM).</p><p>In the case of <a href=https://dunemud.net>the MUD I have a personal attachment to</a> there&rsquo;s been
+a steady development of game content in LPC spanning 30 years of work by
+multiple independent sets of people. I fell into this scene in ~2001 as a goofy
+teenager and by then there had been at least two whole separate sets of
+developers that came before me. As you can expect, the code quality is
+incredibly varied and mysterious spooky action at a distance abounds. More than
+anything there&rsquo;s just <em>a lot of code</em>. While only a portion of it actually gets
+used in game there&rsquo;s on the order of 60,000 individual <code>.c</code> (LPC) files kicking
+around.</p><h2 id=fighting-entropy>Fighting Entropy</h2><p>With this kind of codebase every game engine update brings a flood of
+compilation errors and bugs to chase down. In ~2021 I fought my way through two
+big LDMud updates. The first, updating from LDMud 3.2.17 (released ~2010) to
+3.3.720 (released ~2011). For the second, I managed to switch the game from
+32bit <code>i686</code> to 64 bit <code>x86_64</code> (no small feat for code this old!) and updated
+to LDMud 3.5.4 (released ~2021). That&rsquo;s around when my energy fell off. The next
+big update to the 3.6.x release stream brought a move to UTF-8 similar to the
+Python2 -> Python3 migration and I had to table the project for a while.</p><p>Recently I found the motivation to get back to work (call it spring energy) and
+move the game to LDMud 3.6.6 (the latest release at the time of writing). With
+a few upgrades under my belt I have a pretty good system for how I approach the
+problem but it&rsquo;s still a unique experience to find yourself fixing bugs in code
+that was written when you were 6 years old. Sometimes I felt like I was
+conversing with ghosts. Would the original authors of this code remember it?
+Would they appreciate me keeping it running into 2030? Bumping into comments
+from friends and mentors long lost can be bittersweet. This particular upgrade
+effort has resulted in touching close to 1000 different files.</p><p>One day it might be interesting to talk about the categories of changes and bugs
+I bumped into but for now I&rsquo;ll say the effort paid off and the production game
+will soon be running on the latest and greatest LDMud. I think this might be the
+first time in the game&rsquo;s 30 year history that we&rsquo;ve been ahead of the upgrade
+curve and it feels pretty good. I can&rsquo;t speak to how much fun the game is to play
+but it&rsquo;s important for me to keep it around. One day I might be able to
+articulate why.</p><h1 id=thinking-about>Thinking about</h1><p><img src=./breakthrough.png alt=Breakthrough></p><ul><li><a href=https://en.wikipedia.org/wiki/Tussilago>Coltsfoot</a>. Without fail these little guys are <em>always</em> the first thing to
+poke up out of the frozen ground. They&rsquo;re not the prettiest but I sure admire
+their tenacity. Towards the end of winter I start to obsess with watching for
+the first appearance (<em>April 14th this year</em>).</li><li><a href=https://without.boats/blog/the-registers-of-rust/>The registers of Rust</a>. I found this blog post by <a href=https://without.boats/>without.boats</a> to be
+a really interesting perspective on the &ldquo;registers&rdquo; (in the linguistics sense,
+not the CPU sense) of programming languages. This was a new lens for me and it
+resonated.</li><li><a href=https://blog.benjojo.co.uk/post/quickcam-usb-userspace-driver>Driver adventures for a 1999 webcam</a>. Just seeing one of
+these ancient &ldquo;eyeball&rdquo; webcams again brought back a lot of memories of time
+spent chatting on MSN Messenger. Besides being nostalgic the technical
+trickery required to get it working again with a modern machine made for a fun
+read.</li></ul><h1 id=until-next-time>Until next time</h1><p><img src=./grackpack.png alt="Grack Pack"></p></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
+<a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
+<a class=border></a></div><div class=footer-info>2023 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>
