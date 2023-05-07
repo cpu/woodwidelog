@@ -80,7 +80,7 @@ Here's hoping all these shaved yaks make it easier to write the next post.
 [Hugo]: https://gohugo.io/
 [vexation-flake]: https://github.com/cpu/vexation/blob/main/site/flake.nix
 [actions workflow]: https://github.com/cpu/vexation/blob/main/.github/workflows/deploy.yml
-[Fernando Ayats]: https://ayats.org/about/
+[Fernando Ayats]: https://ayats.org/
 
 # Thinking about
 
