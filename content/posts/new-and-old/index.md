@@ -49,10 +49,10 @@ the blog train with some quick updates. Stay tuned. :-)
 
 Readers of my dev log know I can't resist talking about [Blightmud] and of
 course I quickly found a way to combine my new energy for Rustls with my
-existing love of that project. Outside of work hours I [replaced] Blightmud's
-code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
+existing love of that project. Outside of work hours I [converted] Blightmud's
+existing code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
 a spiritual win it ended up fixing a mysterious crash on MacOS that nobody had
-been able to diagnose. Replacing a separate libcurl based feature to use a pure
+been able to diagnose. Replacing a separate `libcurl` based feature to use a pure
 Rust alternative also [fixed] some long-standing flaky unit tests so it's no
 fluke! I can't overstate how pleasant I've been finding Rust and its surrounding
 ecosystem.
@@ -64,7 +64,7 @@ ecosystem.
 [webpki]: https://github.com/rustls/webpki
 [feature]: https://github.com/rustls/webpki/pull/42
 [Blightmud]: https://github.com/blightmud/blightmud
-[replaced]: https://github.com/Blightmud/Blightmud/pull/775
+[converted]: https://github.com/Blightmud/Blightmud/pull/775
 [fixed]: https://github.com/Blightmud/Blightmud/pull/782#issuecomment-1501197372
 
 ## LDMud Upgrades
