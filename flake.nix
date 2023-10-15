@@ -14,8 +14,8 @@
             src = pkgs.fetchFromGitHub {
               repo = "archie";
               owner = "athul";
-              rev = "2f312c3759adf9059791a7cd697788018d09dbe8";
-              hash = "sha256-y+XNkLcfXj7php+jYq7kRC9gPkAXtV566Q7KrqzYX6s=";
+              rev = "0f3a862fc89e1f4a56e4380b9f27b7b71f964a34";
+              sha256 = "sha256-Cfjk7maDspj8QB4F6gflyvW0AcnReukUlO+oZQs2pZ0=";
             };
           } ''
             cp -ra $src $out
