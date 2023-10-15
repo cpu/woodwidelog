@@ -9,3 +9,18 @@
 footer {
   border-top: 0.2em dotted var(--bordercl);
 }
+
+li {
+  font-family: 'Fira Sans', sans-serif;
+  line-height: 1.5;
+  padding-top: 0.35em;
+}
+
+ul > li::before {
+  content: '‣';
+  padding-right: 0.5em;
+}
+
+a {
+  border-bottom: 2px solid var(--maincolor);
+}
