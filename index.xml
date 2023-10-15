@@ -1,3 +1,569 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sun, 07 May 2023 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>New and Old</title><link>https://log.woodweb.ca/2023/05/new-and-old/</link><pubDate>Sun, 07 May 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/05/new-and-old/</guid><description>Rustls, 30 year old LPC.</description></item><item><title>To Clear Skies</title><link>https://log.woodweb.ca/2023/03/to-clear-skies/</link><pubDate>Sun, 26 Mar 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/03/to-clear-skies/</guid><description>Nix Flakes, deploy-rs, Blightspell.</description></item><item><title>Carcinisation</title><link>https://log.woodweb.ca/2023/01/carcinisation/</link><pubDate>Sun, 15 Jan 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/01/carcinisation/</guid><description>Snowshoeing, NAWS, Trust-DNS.</description></item><item><title>22° halo</title><link>https://log.woodweb.ca/2022/12/22-halo/</link><pubDate>Mon, 26 Dec 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/12/22-halo/</guid><description>Moon ring, Prototext, Pentium III.</description></item><item><title>Rock Replace</title><link>https://log.woodweb.ca/2022/11/rock-replace/</link><pubDate>Wed, 09 Nov 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/11/rock-replace/</guid><description>Mudlet, NixPkgs Lua Overrides, Bowling.</description></item><item><title>Slow Moving</title><link>https://log.woodweb.ca/2022/10/slow-moving/</link><pubDate>Sat, 15 Oct 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/slow-moving/</guid><description>Butterfly. Blightmud. Bad movies.</description></item><item><title>WWL</title><link>https://log.woodweb.ca/2022/10/wwl/</link><pubDate>Tue, 04 Oct 2022 12:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/wwl/</guid><description>Starting. Fall. LDMud. VeXation.</description></item><item><title>About</title><link>https://log.woodweb.ca/about/</link><pubDate>Sun, 02 Oct 2022 00:00:00 +0000</pubDate><guid>https://log.woodweb.ca/about/</guid><description>An attempt at a journal slash dev log by @cpu.
-🛠️💕 &amp;ndash; I like: Go, applied cryptography, Rust, mountain bikes, ACME, computer security, mushrooms, Nix/NixOS, death|black metal, Linux, free software, skateboards, DNS, emoji, snowboards, Wireguard, living in the woods, MUDs, LPC, &amp;amp; reading other people’s dev logs.
-🚧🏗️ &amp;ndash; I&amp;rsquo;ve worked at: Block/Square, Let&amp;rsquo;s Encrypt/ISRG, Fastly, Leviathan Security Group, &amp;amp; the Carleton Computer Security Lab. I helped make ACME and I&amp;rsquo;ve contributed to free software like Boulder, Nixpkgs, ZLint, and Streisand.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sun, 07 May 2023 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>New and Old</title><link>https://log.woodweb.ca/2023/05/new-and-old/</link><pubDate>Sun, 07 May 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/05/new-and-old/</guid><description>&lt;p>Spring has sprung and it&amp;rsquo;s a potent reminder of how much I value contrast.
+Moaning about the winter is a well established Canadian past-time but I&amp;rsquo;ve
+realized I need four distinct seasons to feel right. For me it&amp;rsquo;s easier to
+appreciate the small details that the change in seasons provides when the
+differences are so stark.&lt;/p>
+&lt;p>&lt;img src="./waves.png" alt="Waves">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;p>Recently I&amp;rsquo;ve been having fun contrasting professional work at the edge
+of some important new trends with recreational work on code living on a very
+different timescale.&lt;/p>
+&lt;h2 id="rustls">Rustls&lt;/h2>
+&lt;p>On the side of modernity, for the past ~two months I&amp;rsquo;ve been working on-contract
+for the &lt;a href="https://www.abetterinternet.org/">ISRG&lt;/a>&amp;rsquo;s &lt;a href="https://www.memorysafety.org/">Prossimo&lt;/a> project on their memory-safety for TLS initiative.
+It&amp;rsquo;s been a fun challenge to onboard both to professional Rust development and
+to the &lt;a href="https://github.com/rustls/rustls">Rustls&lt;/a> ecosystem of projects at the same time. I believe strongly in
+the need for a memory safe alternative to OpenSSL and Rustls has so many unique
+advantages above-and-beyond being written in Rust. I&amp;rsquo;m extremely grateful to
+have the opportunity to learn from the heavy-hitters that have made the project
+so strong.&lt;/p>
+&lt;h3 id="the-new-guy">The new guy&lt;/h3>
+&lt;p>Being new has meant finding creative ways to help out while still learning the
+ropes. So far I&amp;rsquo;ve been able to pitch in with misc. tasks to help get &lt;a href="https://www.memorysafety.org/blog/rustls-new-features/">Rustls
+0.21.0&lt;/a> out the door, helped clear up some issue/pull request backlog, fixed
+some old bugs, and adopted some in-progress work that needed more attention to
+get across the goal line. While not a massive technical achievement I&amp;rsquo;m
+particularly happy to have landed a small &lt;a href="https://github.com/rustls/webpki">webpki&lt;/a> crate &lt;a href="https://github.com/rustls/webpki/pull/42">feature&lt;/a> for
+collecting certificate DNS subjects that has been carried along by ~3 other sets
+of people all the way back to 2017. A real team effort!&lt;/p>
+&lt;p>One day I&amp;rsquo;d like to try and write down some of my strategies and thoughts about
+joining an open source project like Rustls but for now I&amp;rsquo;m trying to get back on
+the blog train with some quick updates. Stay tuned. :-)&lt;/p>
+&lt;h3 id="blightmud">Blightmud&lt;/h3>
+&lt;p>Readers of my dev log know I can&amp;rsquo;t resist talking about &lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a> and of
+course I quickly found a way to combine my new energy for Rustls with my
+existing love of that project. Outside of work hours I &lt;a href="https://github.com/Blightmud/Blightmud/pull/775">replaced&lt;/a> Blightmud&amp;rsquo;s
+code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
+a spiritual win it ended up fixing a mysterious crash on MacOS that nobody had
+been able to diagnose. Replacing a separate libcurl based feature to use a pure
+Rust alternative also &lt;a href="https://github.com/Blightmud/Blightmud/pull/782#issuecomment-1501197372">fixed&lt;/a> some long-standing flaky unit tests so it&amp;rsquo;s no
+fluke! I can&amp;rsquo;t overstate how pleasant I&amp;rsquo;ve been finding Rust and its surrounding
+ecosystem.&lt;/p>
+&lt;h2 id="ldmud-upgrades">LDMud Upgrades&lt;/h2>
+&lt;p>At the complete other end of the spectrum I&amp;rsquo;ve been working on upgrading
+&lt;a href="https://dunemud.net/doku.php/start">a codebase&lt;/a> that started in 1993 to a modern &lt;a href="http://www.ldmud.eu/">LDMud&lt;/a> release.&lt;/p>
+&lt;h2 id="background">Background&lt;/h2>
+&lt;p>I&amp;rsquo;ve talked a little bit about LDMud in &lt;a href="https://log.woodweb.ca/2022/10/wwl/">a previous entry&lt;/a>. To keep things short
+and sweet you can think of it as a cross between a game engine like Unity or
+Unreal Engine, and a scripting language with a bytecode based VM like Python.
+Much of its existence can be understood through the lens of the early 1990s and
+the need to be able to support two important use-cases:&lt;/p>
+&lt;ol>
+&lt;li>Live reloading game content without recompilation or process restart.&lt;/li>
+&lt;li>Supporting development of game content by amateur developers.&lt;/li>
+&lt;/ol>
+&lt;p>The first requirement comes from frustration working with traditional C based
+MUD codebases that were popular at the time. Adding new game content written in
+C required rebuilding the game (slow!) and restarting the process to pick up the
+changes (there go all your players, and anything in the game world that isn&amp;rsquo;t
+persisted!).&lt;/p>
+&lt;p>The second requirement was similarly (at least in my mind) driven by
+frustrations with C. A monolithic C-based system left no room for programmer
+error. Simple mistakes inevitably lead to difficult to diagnose memory
+corruption bugs. Similarly most of the game designers and content contributors
+were learning to code for the first time. The combination of a &lt;strong>very&lt;/strong> text
+heavy use case, C&amp;rsquo;s poor support for string manipulation, and a bunch of novice
+programmers is a sure recipe for disaster.&lt;/p>
+&lt;h2 id="old-lpc-code">Old LPC Code&lt;/h2>
+&lt;p>The solution echoes trends in the rest of the industry. Use C for the heavy
+lifting, network programming, and interfacing with the operating system and
+embed a scripting language for the game content. The LP flavour of MUD arose
+around the development of &lt;a href="https://handwiki.org/wiki/LPC_(programming_language)">LPC&lt;/a> as this scripting language and LD implements it by
+compiling LPC to a bytecode it runs in a bespoke virtual machine (much like Java
+bytecode and the JVM).&lt;/p>
+&lt;p>In the case of &lt;a href="https://dunemud.net">the MUD I have a personal attachment to&lt;/a> there&amp;rsquo;s been
+a steady development of game content in LPC spanning 30 years of work by
+multiple independent sets of people. I fell into this scene in ~2001 as a goofy
+teenager and by then there had been at least two whole separate sets of
+developers that came before me. As you can expect, the code quality is
+incredibly varied and mysterious spooky action at a distance abounds. More than
+anything there&amp;rsquo;s just &lt;em>a lot of code&lt;/em>. While only a portion of it actually gets
+used in game there&amp;rsquo;s on the order of 60,000 individual &lt;code>.c&lt;/code> (LPC) files kicking
+around.&lt;/p>
+&lt;h2 id="fighting-entropy">Fighting Entropy&lt;/h2>
+&lt;p>With this kind of codebase every game engine update brings a flood of
+compilation errors and bugs to chase down. In ~2021 I fought my way through two
+big LDMud updates. The first, updating from LDMud 3.2.17 (released ~2010) to
+3.3.720 (released ~2011). For the second, I managed to switch the game from
+32bit &lt;code>i686&lt;/code> to 64 bit &lt;code>x86_64&lt;/code> (no small feat for code this old!) and updated
+to LDMud 3.5.4 (released ~2021). That&amp;rsquo;s around when my energy fell off. The next
+big update to the 3.6.x release stream brought a move to UTF-8 similar to the
+Python2 -&amp;gt; Python3 migration and I had to table the project for a while.&lt;/p>
+&lt;p>Recently I found the motivation to get back to work (call it spring energy) and
+move the game to LDMud 3.6.6 (the latest release at the time of writing). With
+a few upgrades under my belt I have a pretty good system for how I approach the
+problem but it&amp;rsquo;s still a unique experience to find yourself fixing bugs in code
+that was written when you were 6 years old. Sometimes I felt like I was
+conversing with ghosts. Would the original authors of this code remember it?
+Would they appreciate me keeping it running into 2030? Bumping into comments
+from friends and mentors long lost can be bittersweet. This particular upgrade
+effort has resulted in touching close to 1000 different files.&lt;/p>
+&lt;p>One day it might be interesting to talk about the categories of changes and bugs
+I bumped into but for now I&amp;rsquo;ll say the effort paid off and the production game
+will soon be running on the latest and greatest LDMud. I think this might be the
+first time in the game&amp;rsquo;s 30 year history that we&amp;rsquo;ve been ahead of the upgrade
+curve and it feels pretty good. I can&amp;rsquo;t speak to how much fun the game is to play
+but it&amp;rsquo;s important for me to keep it around. One day I might be able to
+articulate why.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;p>&lt;img src="./breakthrough.png" alt="Breakthrough">&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/Tussilago">Coltsfoot&lt;/a>. Without fail these little guys are &lt;em>always&lt;/em> the first thing to
+poke up out of the frozen ground. They&amp;rsquo;re not the prettiest but I sure admire
+their tenacity. Towards the end of winter I start to obsess with watching for
+the first appearance (&lt;em>April 14th this year&lt;/em>).&lt;/li>
+&lt;li>&lt;a href="https://without.boats/blog/the-registers-of-rust/">The registers of Rust&lt;/a>. I found this blog post by &lt;a href="https://without.boats/">without.boats&lt;/a> to be
+a really interesting perspective on the &amp;ldquo;registers&amp;rdquo; (in the linguistics sense,
+not the CPU sense) of programming languages. This was a new lens for me and it
+resonated.&lt;/li>
+&lt;li>&lt;a href="https://blog.benjojo.co.uk/post/quickcam-usb-userspace-driver">Driver adventures for a 1999 webcam&lt;/a>. Just seeing one of
+these ancient &amp;ldquo;eyeball&amp;rdquo; webcams again brought back a lot of memories of time
+spent chatting on MSN Messenger. Besides being nostalgic the technical
+trickery required to get it working again with a modern machine made for a fun
+read.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./grackpack.png" alt="Grack Pack">&lt;/p></description></item><item><title>To Clear Skies</title><link>https://log.woodweb.ca/2023/03/to-clear-skies/</link><pubDate>Sun, 26 Mar 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/03/to-clear-skies/</guid><description>&lt;p>Since February I&amp;rsquo;ve been working on regaining my focus. It feels like something
+that used to come naturally but now takes deliberate action. With focus, I&amp;rsquo;m
+returning more to habits and systems of work I felt stronger about before
+the influence of the broader tech industry led me down a road of making
+concessions. I won&amp;rsquo;t pretend I don&amp;rsquo;t have to modulate self-doubt, but at least
+there aren&amp;rsquo;t any OKRs.&lt;/p>
+&lt;p>&lt;img src="./sky.png" alt="Sky">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;h2 id="nix-flakes">Nix Flakes&lt;/h2>
+&lt;p>I started using Nix and &lt;a href="https://nixos.org/">NixOS&lt;/a> in early 2020. This meant I was &lt;em>just&lt;/em> a little
+bit early for the introduction of &lt;a href="https://www.tweag.io/blog/2020-05-25-flakes/">Nix Flakes&lt;/a>. As a result my primary
+configurations have always been using the classic &amp;ldquo;channels&amp;rdquo; approach. To
+criminally under-summarize, Nix flakes introduce some standardized structure
+that improves both the composability and reproducibility of the Nix ecosystem.&lt;/p>
+&lt;p>It didn&amp;rsquo;t take long for the advantages of &amp;ldquo;the flakes way&amp;rdquo; to percolate into my
+brain enough that I started using flakes in smaller one-off projects (like
+&lt;a href="https://github.com/cpu/woodwidelog/blob/main/flake.nix">this blog&lt;/a> for example) but I was still carrying around legacy baggage for my
+most important use-cases (laptop and server configurations). That&amp;rsquo;s a shame,
+because flakes (while still experimental) are an obvious improvement over the
+status quo. Folks new to Nix are best served by skipping over the legacy world
+and moving right to flakes.&lt;/p>
+&lt;p>With more free time I finally got around to switching all of my legacy
+configurations to a flake based monorepo. In sum it was a super easy transition,
+even with &lt;a href="https://github.com/nix-community/home-manager">Home Manager&lt;/a> and some custom pinning in the mix. If you&amp;rsquo;re like me
+and have been holding off on making the switch you should take the plunge! It
+was less work than I expected and I&amp;rsquo;m really happy with the convenience of
+managing a single &lt;code>flake.lock&lt;/code> file for all of my laptop and server
+configurations. I&amp;rsquo;d love to make my monorepo public but I still haven&amp;rsquo;t found
+a nice way to elide bits of configuration that aren&amp;rsquo;t runtime secrets favourable
+to &lt;a href="https://github.com/Mic92/sops-nix">sops-nix&lt;/a>, but also feel icky to hang out in the open. If we know each other
+personally and you&amp;rsquo;re looking for more Nix resources feel free to reach out and
+I can add you as a collaborator.&lt;/p>
+&lt;h2 id="deploy-rs">deploy-rs&lt;/h2>
+&lt;p>Of course, no migration is ever &lt;em>totally&lt;/em> seamless.. While sketching out
+a transition to using Nix flakes I realized that the scheme I used to manage
+server configuration with NixOS needed to change too.&lt;/p>
+&lt;p>Historically I&amp;rsquo;ve used &lt;a href="https://github.com/NixOS/nixops">NixOps&lt;/a> as a Nix-based approximation of other
+server configuration tools like &lt;a href="https://www.ansible.com/">Ansible&lt;/a>. Using NixOps I could describe
+system/service configurations in Nix, build the closures locally, and ship the
+required parts of the Nix cache to remote systems. While it worked well for
+me initially it hasn&amp;rsquo;t aged gracefully. Development has mostly stalled and often
+the package is marked insecure, requiring &lt;a href="https://nixos.org/manual/nixpkgs/stable/#sec-allow-insecure">annoying workarounds&lt;/a> to
+use. Ultimately the breaking point was the weak flake support and missing
+documentation.&lt;/p>
+&lt;p>I&amp;rsquo;ve since switched to using &lt;a href="https://github.com/serokell/deploy-rs">deploy-rs&lt;/a> and can&amp;rsquo;t say enough nice things about
+it. It was minimal work to adapt my existing configurations into a flake that
+&lt;code>deploy-rs&lt;/code> could use to shuffle specific &lt;code>nixosConfigurations&lt;/code> off to remote
+machines. Flake support is top notch, and the Rust based tooling has a much
+smaller system footprint than the Python based NixOps environment. It also uses
+a clever &amp;ldquo;dead-man&amp;rsquo;s switch&amp;rdquo; system to achieve &lt;a href="https://github.com/serokell/deploy-rs#magic-rollback">magic rollback&lt;/a> to a previous
+configuration generation if the new generation fails to activate cleanly.&lt;/p>
+&lt;h2 id="blightspell">Blightspell&lt;/h2>
+&lt;p>It wouldn&amp;rsquo;t be a wood wide log update if I didn&amp;rsquo;t find a way to shoehorn in some
+MUD related content (see also &lt;a href="https://log.woodweb.ca/2023/01/carcinisation/">carcinisation&lt;/a>, &lt;a href="https://log.woodweb.ca/2022/10/slow-moving/">slow-moving&lt;/a>). In February
+I spent some time chasing the dream of a fancy spellchecking experience for
+&lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a>, my terminal &lt;a href="https://en.wikipedia.org/wiki/MUD">MUD&lt;/a> client of choice.&lt;/p>
+&lt;p>To achieve what I wanted I had to add a handful of new Blightmud features
+including:&lt;/p>
+&lt;ul>
+&lt;li>callback support for when unsent data in the &lt;a href="https://github.com/Blightmud/Blightmud/blob/6b4c5fefebddb31694140afa0e544bec4b276ab2/resources/help/prompt.md?plain=1#L39-L49">prompt area changes&lt;/a>.&lt;/li>
+&lt;li>a new module for manipulating &lt;a href="https://github.com/Blightmud/Blightmud/blob/dev/resources/help/prompt_mask.md">a &amp;ldquo;mask&amp;rdquo;&lt;/a> for decorating unsent prompt
+data.&lt;/li>
+&lt;li>a new low-level &lt;a href="https://github.com/Blightmud/Blightmud/blob/dev/resources/help/spellcheck.md">spellcheck&lt;/a> module that offers bindings on top of &lt;a href="https://hunspell.github.io/">hunspell&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;p>With those features landing in &lt;a href="https://github.com/Blightmud/Blightmud/releases/tag/v5.1.0">Blightmud v5.1.0&lt;/a> it was possible to write
+&lt;a href="https://github.com/cpu/blightspell">Blightspell&lt;/a>, a Lua plugin for Blightmud that implements real-time spellcheck.
+I&amp;rsquo;m really happy with the end result! If you&amp;rsquo;re a Blightmud user be sure to give
+it a try and let me know what you think :-)&lt;/p>
+&lt;p>&lt;a href="https://asciinema.org/a/uHAMcFnDaLxHbzqGxtJrwNCx0">&lt;img src="https://asciinema.org/a/uHAMcFnDaLxHbzqGxtJrwNCx0.svg" alt="asciicast">&lt;/a>&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/miniflux/v2">Miniflux&lt;/a> - Until Google Reader was shutdown (RIP) I was a heavy user of
+&lt;a href="https://en.wikipedia.org/wiki/RSS">RSS&lt;/a>. Since Twitter is being turned into dogshit by an egomaniac I&amp;rsquo;ve come
+back to RSS as a way to stay on top of cool writing. Miniflux is a great
+self-hosted experience and it gets extra points being written in Go.&lt;/li>
+&lt;li>&lt;a href="https://bobvanderlinden.me/autosquash-in-git/">Autosquash in Git&lt;/a> - I&amp;rsquo;m no stranger to &lt;code>git rebase --interactive&lt;/code> but
+learning about autosquash from Bob Vanderlinden&amp;rsquo;s blog has been
+a game-changer. Shout out to the developers that are meticulous about a clean
+and helpful &lt;code>git log&lt;/code> - it&amp;rsquo;s rarer than you would hope. 💔&lt;/li>
+&lt;li>&lt;a href="https://drew.shoes/posts/moving-the-posts/">Moving the Posts&lt;/a> - this post from Drew Schuster&amp;rsquo;s blog lands squarely in the
+overlap of my continued interest in learning about the power grid and my
+experiences with system maintenance. You&amp;rsquo;ll laugh, you&amp;rsquo;ll cry, you&amp;rsquo;ll
+bookmark.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./tracks.png" alt="Turkey Tracks">&lt;/p></description></item><item><title>Carcinisation</title><link>https://log.woodweb.ca/2023/01/carcinisation/</link><pubDate>Sun, 15 Jan 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/01/carcinisation/</guid><description>&lt;p>Winter has blessed my area with ample snow. January is a classic prompt for
+evaluating one&amp;rsquo;s shit and I can get a lot of thinking done in the pockets of
+silence a snowy forest provides. Lately I&amp;rsquo;m thinking a lot about trusting
+myself. I&amp;rsquo;m ready to take some bigger swings even if a few might miss.&lt;/p>
+&lt;p>&lt;img src="./snowshoe.jpg" alt="Snowshoeing">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;p>I&amp;rsquo;ve dabbled with the Rust programming language a few times over the past few
+years but haven&amp;rsquo;t hit the tipping point where it feels &lt;em>comfortable&lt;/em>. The past
+month or so I&amp;rsquo;ve been trying to find excuses to address that by getting my hands
+dirty where I can.&lt;/p>
+&lt;h2 id="blightmud-naws-support">Blightmud NAWS Support&lt;/h2>
+&lt;p>Readers of this log (&lt;em>uncountably numerous, I&amp;rsquo;m sure&lt;/em>) will remember &lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a>
+coming up &lt;a href="https://log.woodweb.ca/2022/10/slow-moving/">in a previous post&lt;/a> where I discussed some challenges
+I encountered writing a Nixpkgs derivation to package it. &lt;strong>TLDR:&lt;/strong> Blightmud is
+a souped up Telnet client for &lt;a href="https://en.wikipedia.org/wiki/MUD">MUDs&lt;/a> written in Rust, with scripting provided by
+Lua.&lt;/p>
+&lt;p>Over the holidays I was working on some fancy server-side text rendering code
+for displaying MUD data in a table format. Making layout decisions about column
+widths and the number of rows to display requires having some sense of how big
+the client&amp;rsquo;s terminal window is. Fortunately, way back in 1988 the IETF network
+working group proposed a standard (&lt;a href="https://www.rfc-editor.org/rfc/rfc1073">RFC 1073&lt;/a>) that describes a way for a telnet
+server and client to &amp;ldquo;Negotiate About Window Size&amp;rdquo; (NAWS). This happens
+out-of-band from the output presented to the user and is automatically updated
+if the client window is resized. Perfect!&lt;/p>
+&lt;p>&lt;em>Only one catch&amp;hellip;&lt;/em> While other clients like &lt;a href="https://tintin.mudhalla.net/">Tintin++&lt;/a> and &lt;a href="https://mudlet.org/">Mudlet&lt;/a>
+already supported NAWS, Blightmud did not. ☹&lt;/p>
+&lt;p>In some ways this was actually fortunate! It gave me a chance to dig into the
+codebase and &lt;a href="https://github.com/Blightmud/Blightmud/commit/35bd9bebe682a85cb46f5b7ef9af0b18a54772e5">implement it&lt;/a> myself. Because the Telnet negotiation logic was
+already exposed to Lua it didn&amp;rsquo;t even require very much Rust to accomplish. The
+only significant Rust change was implementing a new event handler
+(&lt;a href="https://github.com/Blightmud/Blightmud/blob/35bd9bebe682a85cb46f5b7ef9af0b18a54772e5/resources/help/lua_blight.md?plain=1#L35-L44">&lt;code>blight.on_dimensions_change&lt;/code>&lt;/a>) exposed to the Lua code
+so that we could perform NAWS updates whenever the terminal window changed
+dimensions. From there all the interesting bits happen in &lt;a href="https://github.com/Blightmud/Blightmud/blob/35bd9bebe682a85cb46f5b7ef9af0b18a54772e5/resources/lua/naws.lua">pure Lua&lt;/a>.&lt;/p>
+&lt;p>While I was kicking around I also fixed a flaky &lt;a href="https://github.com/Blightmud/Blightmud/commit/761823ea34d7a01e665d2608fd2c1a0933d02ec2">&lt;code>ndk-sys&lt;/code> checksum
+err&lt;/a>, and a small &lt;a href="https://github.com/Blightmud/Blightmud/commit/08815e8a403507040bbeee2005b37224af18495c">GMCP interop. gotcha&lt;/a>. Both trivial
+changes.&lt;/p>
+&lt;h2 id="trust-dns">Trust-DNS&lt;/h2>
+&lt;p>For a long time I&amp;rsquo;ve hosted my own authoritative DNS zones, first with &lt;a href="https://www.isc.org/bind/">BIND&lt;/a> and
+then later with &lt;a href="https://www.knot-dns.cz/">Knot&lt;/a>. While it&amp;rsquo;s certainly easier to use a hosted DNS service
+from your registrar or hosting provider it&amp;rsquo;s definitely a lot more educational
+to do it yourself. I&amp;rsquo;m generally happy with Knot, but sure would love to have an
+alternative that was written in a memory safe language. DNS is at that perfectly
+terrifying intersection of performance critical code and having to parse complex
+and untrusted data from a network socket. For that reason I was stoked when
+&lt;a href="https://www.memorysafety.org/">ISRG&amp;rsquo;s Prossimo project&lt;/a> announced support for a DNS initiative
+&lt;a href="https://www.memorysafety.org/initiative/dns/">supporting Trust-DNS&lt;/a>, a suite of DNS software written in Rust.&lt;/p>
+&lt;p>After whipping up a quick Nix derivation (&lt;em>I haven&amp;rsquo;t cleaned this up for
+Nixpkgs yet, stay tuned&lt;/em>) I decided to try and take &lt;a href="https://github.com/bluejekyll/trust-dns">Trust-DNS&lt;/a> for a spin with
+my zone data. I hit a couple snags right away which made for a great chance to
+roll my sleeves up.&lt;/p>
+&lt;p>The first snag was simple: I was spinning my wheels looking for a &lt;code>named&lt;/code> binary
+that was referenced in the README instructions but that wasn&amp;rsquo;t being produced by
+my derivation, or a vanilla &lt;code>cargo&lt;/code> build. It turned out this was just bad
+timing, the project only &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1859">recently switched&lt;/a> to preferring a &lt;code>trust-dns&lt;/code> binary
+name. I was able to &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1873">clean up the remaining references&lt;/a> with some
+&lt;code>grep&lt;/code>/&lt;code>sed&lt;/code> magic.&lt;/p>
+&lt;p>The second snag was more interesting: the zone data files I had been carrying
+around for ~10 years were failing to parse with an error like:&lt;/p>
+&lt;blockquote>
+&lt;p>Error { kind: Message(&amp;ldquo;record class not specified&amp;rdquo;) }'&lt;/p>
+&lt;/blockquote>
+&lt;p>Much like the error claims, none of my records specified a record class. It
+seems this never came up for me before now because both Knot and BIND would
+parse these zones by implicitly assuming they were class IN (for &amp;ldquo;INternet&amp;rdquo;).
+(&lt;em>99.9999% of the time this is the only choice that makes sense in 2023&lt;/em>).&lt;/p>
+&lt;p>Deciding who&amp;rsquo;s at fault here, my zone files or trust-dns, required digging in to
+&lt;a href="https://datatracker.ietf.org/doc/html/rfc1035">RFC 1035&lt;/a>, and specifically, §5 &lt;a href="https://datatracker.ietf.org/doc/html/rfc1035#autoid-48">MASTER FILES&lt;/a>. On the topic of class fields that
+section says:&lt;/p>
+&lt;blockquote>
+&lt;p>The RR begins with optional TTL and class fields, followed by a type and RDATA
+field appropriate to the type and class. Class and type use the standard
+mnemonics, TTL is a decimal integer. Omitted class and TTL values are default
+to the last explicitly stated values.&lt;/p>
+&lt;/blockquote>
+&lt;p>In classic RFC fashion this isn&amp;rsquo;t very helpful if you&amp;rsquo;re considering a case
+where there &lt;em>isn&amp;rsquo;t any&lt;/em> explicitly stated value. The class and TTL are both
+optional, so what do you do when zero records specify a class? In this case,
+like most areas where the RFCs are vague, most folks just Do What BIND
+Does™️. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
+&lt;p>I whipped up &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1874">a small PR&lt;/a> to adopt this behaviour and &lt;code>trust-dns&lt;/code> was able to
+parse my zones without any other changes. 🎉 Folks seem in agreement that
+supporting this type of zone file is sensible so we&amp;rsquo;re just waiting on some
+other review details to be sorted out. Along the way I also &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1877">fixed&lt;/a> a small
+&lt;code>cargo audit&lt;/code> CI failure with a trivial dep. bump.&lt;/p>
+&lt;p>Trust-DNS isn&amp;rsquo;t quite ready to replace Knot for my use-cases but I&amp;rsquo;m excited to
+try and help it get it there.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;p>&lt;img src="./happyrock.jpg" alt="Happy rock">&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/Happy_Rock">Happy Rock&lt;/a> - a glorious roadside attraction &lt;em>slash&lt;/em> information centre for
+Gladstone Manitoba. What a dapper looking rock.&lt;/li>
+&lt;li>&lt;a href="https://veggie.dog/">Veggie Dog&lt;/a> - my (&lt;em>much smarter and much more talented&lt;/em>) love has a blog of
+her own. You should read it. The writing is fantastic and a lot less fractured
+than my own.&lt;/li>
+&lt;li>&lt;a href="https://cohost.org/cathoderaydude/post/796581-bowling-servers">Bowling Servers&lt;/a> - hat tip to &lt;a href="https://cohost.org/cathoderaydude">Cathode Ray Dude&lt;/a> for surfacing this niche.
+It&amp;rsquo;s amazing what you can do with a few pixels of grayscale input.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./glitter.jpg" alt="Glitter">&lt;/p></description></item><item><title>22° halo</title><link>https://log.woodweb.ca/2022/12/22-halo/</link><pubDate>Mon, 26 Dec 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/12/22-halo/</guid><description>&lt;p>Living somewhere with a winter that&amp;rsquo;s extreme even by Canadian standards has
+taught me a lot about how far reaching the cold can be. Its influence spans
+everything from the consistency of the snow you walk across to the way you
+perceive light. Last year I saw my first &lt;a href="https://en.wikipedia.org/wiki/Sun_dog">Sun dog&lt;/a>, and this year I was lucky
+enough to catch the moon with a &lt;a href="https://en.wikipedia.org/wiki/22%C2%B0_halo">22° halo&lt;/a>.&lt;/p>
+&lt;p>&lt;img src="./moon_halo.jpg" alt="Moon halo">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;h2 id="protobuf-text-format-encoding">Protobuf Text Format Encoding&lt;/h2>
+&lt;p>It&amp;rsquo;s not super well known, but &lt;a href="https://developers.google.com/protocol-buffers">Protocol Buffers&lt;/a> have a human friendly &lt;a href="https://developers.google.com/protocol-buffers/docs/text-format-spec">text
+format&lt;/a> with something approaching a formal spec&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>. This lets you write
+a schema for your data in typical &lt;code>.proto&lt;/code> form, and encode/decode
+instances of data adhering to that schema expressed in a format very close to
+YAML. Being protobuf backed this works great in most major languages. The text
+format makes working with the data easy for humans and the schema makes working
+with the data easy for programs. This combination of strengths makes it a great
+choice for configuration files for projects that already depend on a protocol
+buffer compiler for some other reason (e.g. gRPC). In Go you can
+marshal/unmarshal to the text format using the
+&lt;a href="https://google.golang.org/protobuf">google.golang.org/protobuf&lt;/a> project&amp;rsquo;s &lt;a href="https://pkg.go.dev/google.golang.org/protobuf/encoding/prototext">encoding/protobuf&lt;/a> package.
+I&amp;rsquo;ve been using it for a few things recently and I hope you might find it useful
+too.&lt;/p>
+&lt;h2 id="pentium-iii-retro-build">Pentium III Retro Build&lt;/h2>
+&lt;p>This December I put together an early 2000s retro gaming PC for my partner as
+a Christmas gift. It was fun to source old parts from around my area and
+working with old hardware was super nostalgic. For the most part I stayed true
+to the era but for storage I replaced the contemporary spinning metal IDE drive
+with a SD card slotted into a cheap adapter board. This had two big advantages:&lt;/p>
+&lt;ol>
+&lt;li>It&amp;rsquo;s super fast. Windows 98 SE runs like a champ.&lt;/li>
+&lt;li>It&amp;rsquo;s easy to eject the SD card and mount it on a modern computer.&lt;/li>
+&lt;/ol>
+&lt;p>That second advantage was a huge help with installing drivers and other software
+without having to make lots of floppy disks and CD ROMs.&lt;/p>
+&lt;p>For the spec nerds the machine is a slightly tuned up Dell Dimension 4100 (&lt;em>I&amp;rsquo;m
+a sucker for this era of Dell beige towers&lt;/em>) with a Pentium III clocked at
+866mhz, 256mb of PC 133mhz SDRAM, a Nvidia GeForce FX 5200 with 128mb of video
+ram, and an Audigy 2 ZS soundcard. It&amp;rsquo;s running Windows 98 SE right now but
+should be able to run XP pretty decently too.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;p>&lt;img src="./minirail.png" alt="Minirail">&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://www.cbc.ca/radio/thecurrent/montreal-minirail-demolition-1.6662944">The Lost Expo &amp;lsquo;67 Minirail&lt;/a> - even though it was well before my
+time the influence of Expo &amp;lsquo;67 on Montréal is unquestionable. How could you
+not adore these tiny minirail cars? RIP.&lt;/li>
+&lt;li>&lt;a href="https://www.youtube.com/@Bobsdecline">@Bobsdecline&lt;/a> - lately I&amp;rsquo;m obsessed with these day-in-a-life videos from
+a Lineman working on the east coast. Combining high voltage electricity,
+heights, and winter weather leaves so little room for error.&lt;/li>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/Doctor_V64">Doctor V64&lt;/a> - a cartridge backup device for the N64 from 1996 made by Bung
+Enterprises Ltd. I had no idea this kind of tech was ever marketed to
+consumers outside of niche homebrew/piracy circles. Strange &amp;amp; cool.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./ice.jpg" alt="Ice crystals">&lt;/p>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>ok, so it&amp;rsquo;s largely EBNF reverse-engineered from the C++ impl. That&amp;rsquo;s
+&lt;em>Good Enough&lt;/em> right?&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>Rock Replace</title><link>https://log.woodweb.ca/2022/11/rock-replace/</link><pubDate>Wed, 09 Nov 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/11/rock-replace/</guid><description>&lt;p>I hear federation is cool now. If you&amp;rsquo;re reading this, start a blog. It&amp;rsquo;s the
+hip old new way to have decentralized shitposts.&lt;/p>
+&lt;p>&lt;img src="./lakeview.jpg" alt="Lake view">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;p>I&amp;rsquo;m doubling down on writing the world&amp;rsquo;s most niche technology blog and
+bringing you another adventure from the intersection of &lt;a href="https://mud.fandom.com/wiki/MUD_client">MUD Clients&lt;/a> and
+&lt;a href="https://github.com/NixOS/nixpkgs">NixPkgs&lt;/a>. Thrills abound, what can I say.&lt;/p>
+&lt;h2 id="mudlet">Mudlet&lt;/h2>
+&lt;p>This time around I was looking into the &lt;a href="https://mudlet.org/">Mudlet&lt;/a> derivation, which seemed to be
+stalled at &lt;a href="https://github.com/Mudlet/Mudlet/releases/tag/Mudlet-4.15.1">4.15.1&lt;/a> in the unstable NixPkgs channel, while the latest release was
+&lt;a href="https://github.com/Mudlet/Mudlet/releases/tag/Mudlet-4.16.0">4.16.0&lt;/a>. What was the hold-up? Well, SQLite3 support was broken:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">[&lt;/span> ERROR &lt;span style="color:#f92672">]&lt;/span> - Cannot find Lua module sqlite3.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Lua error: error loading module &lt;span style="color:#e6db74">&amp;#39;luasql.sqlite3&amp;#39;&lt;/span> from file.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#39;/nix/store/ng8m8g0sddihql99nds5z8amd30qiaig-lua-5.1.5-env/lib/lua/5.1/luasql/sqlite3.so&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/nix/store/ng8m8g0sddihql99nds5z8amd30qiaig-lua-5.1.5-env/lib/lua/5.1/luasql/sqlite3.so:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> undefined symbol: lua_isinteger
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Database support will not be available.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some digging I had a strong theory for the root cause. For Reasons™️
+Mudlet only supports Lua 5.1 and the careful observer will note that the missing
+symbol from the error message, &lt;code>lua_isinteger&lt;/code>, only appears in the &lt;a href="https://www.lua.org/manual/5.3/manual.html#lua_isinteger">Lua 5.3
+API Docs&lt;/a>. The &lt;code>LuaSQL-SQLite3&lt;/code> &lt;a href="https://luarocks.org/modules/tomasguisasola/luasql-sqlite3">LuaRocks page&lt;/a> lists
+compatibility with Lua &amp;gt;= 5.1 but a &lt;a href="https://github.com/lunarmodules/luasql/commit/ad59e6bf09b1eab5df02a7bc2bca056222a26030">commit from last year&lt;/a> relies
+on a Lua 5.3+ C API feature! How hasn&amp;rsquo;t this broken anyone else you might ask?
+Simple: the regression hasn&amp;rsquo;t been bundled into a release yet. It&amp;rsquo;s just us
+folks on the bleeding edge that are getting cut and NixPkgs at the time of
+writing has the library &lt;a href="https://github.com/NixOS/nixpkgs/blob/c588a77cd54fbdbe874ddd1e63656d5fd69c6ae6/pkgs/development/lua-modules/generated-packages.nix#L2164-L2185">pinned at a rev&lt;/a> that includes the regression. 🔪&lt;/p>
+&lt;p>An &lt;a href="https://github.com/lunarmodules/luasql/issues/147">upstream issue&lt;/a> was dutifully filed but I wanted to unbreak Mudlet
+today. First I considered overriding the LuaRocks rev for the problematic lib
+back to before the regression. There&amp;rsquo;s even a &lt;a href="https://github.com/NixOS/nixpkgs/blob/fbec74286dd682720703fc455ec650c0a8552dbf/pkgs/development/lua-modules/overrides.nix#L352-L356">handy
+&lt;code>overrides.nix&lt;/code>&lt;/a> for Lua modules that could have been
+used for that. I discarded this approach because it would be changing the
+version for all of Nixpkgs and the blast radius seemed too high; maybe there are
+Lua 5.3 users happy with the more up-to-date package.&lt;/p>
+&lt;p>To localize the fix to just Mudlet I &lt;a href="https://github.com/NixOS/nixpkgs/pull/199944/commits/ae5ed8ce226db3913adf7b1107487f53bd8c69da">took a different approach&lt;/a>,
+using a package override for the Lua derivation used to build the Lua
+environment with the dependencies Mudlet requires:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-nix" data-lang="nix">&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> overrideLua &lt;span style="color:#960050;background-color:#1e0010">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> packageOverrides &lt;span style="color:#f92672">=&lt;/span> self: super: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># luasql-sqlite3 master branch broke compatibility with lua 5.1. Pin to&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># an earlier commit.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># https://github.com/lunarmodules/luasql/issues/147&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> luasql-sqlite3 &lt;span style="color:#f92672">=&lt;/span> super&lt;span style="color:#f92672">.&lt;/span>luaLib&lt;span style="color:#f92672">.&lt;/span>overrideLuarocks super&lt;span style="color:#f92672">.&lt;/span>luasql-sqlite3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (drv: {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> version &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;2.6.0-1-custom&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> src &lt;span style="color:#f92672">=&lt;/span> fetchFromGitHub {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> owner &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;lunarmodules&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> repo &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;luasql&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rev &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;8c58fd6ee32faf750daf6e99af015a31402578d1&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> hash &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;sha256-XlTB5O81yWCrx56m0cXQp7EFzeOyfNeqGbuiYqMrTUk=&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">in&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> lua&lt;span style="color:#f92672">.&lt;/span>override { &lt;span style="color:#66d9ef">inherit&lt;/span> packageOverrides; };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> luaEnv &lt;span style="color:#960050;background-color:#1e0010">=&lt;/span> overrideLua&lt;span style="color:#f92672">.&lt;/span>withPackages (ps: &lt;span style="color:#66d9ef">with&lt;/span> ps; [
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> luasql-sqlite3
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It worked perfectly. 🎉 No more undefined symbol trouble and Mudlet 4.16.0 is
+&lt;a href="https://search.nixos.org/packages?channel=unstable&amp;amp;show=mudlet&amp;amp;from=0&amp;amp;size=50&amp;amp;sort=relevance&amp;amp;type=packages&amp;amp;query=mudlet">now available&lt;/a> in the NixPkgs unstable channel.&lt;/p>
+&lt;p>&lt;strong>Bonus&lt;/strong>: I also fixed the optional integration to let Mudlet set your activity
+status in Discord based on the MUD you&amp;rsquo;re playing. Getting that working was just
+a matter of wiring a dependency on &lt;code>discord-rpc&lt;/code> through to the QT wrapper
+&lt;code>LD_LIBRARY_PATH&lt;/code>.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;p>&lt;img src="./candlepin.png" alt="Candlepin Bowling">&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling">Candlepin Bowling&lt;/a> - how can you not love a weird bowling variant &lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling#/media/File:20190514_Candlepin_states_and_provinces.png">nearly
+exclusive&lt;/a> to the Maritimes. 🎳&lt;/li>
+&lt;li>&lt;a href="https://wjwh.eu/posts/2021-10-01-no-syscall-server-iouring.html">Stupid tricks with ioring&lt;/a>: come for the clickbait title, stay for the
+interesting (ab)use of ioring.&lt;/li>
+&lt;li>&lt;a href="https://fulcicult.bandcamp.com/album/exhumed-information">FULCI&lt;/a>: &lt;em>&amp;ldquo;The death metal band named after the Godfather of gore&amp;rdquo;&lt;/em>, exactly as
+described on the tin, 8/10.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./sunset.jpg" alt="Sunset view">&lt;/p></description></item><item><title>Slow Moving</title><link>https://log.woodweb.ca/2022/10/slow-moving/</link><pubDate>Sat, 15 Oct 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/slow-moving/</guid><description>&lt;p>Its been hard to marshal energy to get up to much. The combination of changing
+weather, a birthday, and Thanksgiving in short succession makes me a bit of
+a slug. Rather than get too hung up on it I&amp;rsquo;ve been embracing 🎃
+&lt;em>Spooky October vibes&lt;/em> 🎃 and watching a lot of horror movies
+(&lt;em>some good, most bad&lt;/em>).&lt;/p>
+&lt;p>&lt;img src="./monarch.jpg" alt="Monarch">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;p>Despite being a slug I did find some time for a small project that needs a bit
+of backstory.&lt;/p>
+&lt;h2 id="blightmud">Blightmud&lt;/h2>
+&lt;h3 id="the-backstory">The Backstory&lt;/h3>
+&lt;p>Most &lt;a href="https://en.wikipedia.org/wiki/MUD">MUD&lt;/a>s are played over Telnet, but using a vanilla Telnet client makes for
+a miserable experience. Serious enjoyment requires niceties like scripting and
+support for extra protocol additions like &lt;a href="https://nexus.ironrealms.com/GMCP">GMCP&lt;/a>, TLS, and &lt;a href="https://www.rfc-editor.org/rfc/rfc2066">charset
+negotiation&lt;/a>. Some folks prefer graphical clients, and excellent free software
+like &lt;a href="https://www.mudlet.org/">Mudlet&lt;/a> have sprung up in recent years to offer a polished, multi-platform,
+graphical MUD client perfect for those people.&lt;/p>
+&lt;p>Personally I&amp;rsquo;ve always preferred terminal clients because of how nicely they
+work over SSH paired with &lt;a href="https://github.com/tmux/tmux">Tmux&lt;/a>. Historically my MUD client of choice (&lt;em>for 15+
+years!&lt;/em>) has been &lt;a href="https://en.wikipedia.org/wiki/TinyFugue">TinyFugue&lt;/a>. Unfortunately, its development is fragmented, it
+uses a custom scripting language (&lt;em>ugh&lt;/em>) and it&amp;rsquo;s implemented in C (&lt;em>ugh++&lt;/em>).&lt;/p>
+&lt;p>Thankfully within the last year I discovered an excellent alternative:
+&lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a>. It&amp;rsquo;s actively developed, supports TLS, uses Lua for its
+scripting language, and is implemented in Rust. What&amp;rsquo;s not to love?&lt;/p>
+&lt;h3 id="in-a-bind">In A Bind&lt;/h3>
+&lt;p>Writing &lt;a href="https://github.com/NixOS/nixpkgs/commit/ae1bee344a09129db2c13d5564e632934b68cdaf">an initial NixPkgs derivation&lt;/a> turned out to be
+a little bit challenging because of Blightmud&amp;rsquo;s optional text-to-speech
+accessibility feature (&lt;em>MUDs are quite popular with people that have visual
+impairments&lt;/em>). Getting this working requires customizing &lt;a href="https://rust-lang.github.io/rust-bindgen/">rust-bindgen&lt;/a>
+and the &lt;code>LIBCLANG_PATH&lt;/code> so that the Cargo build of the &lt;code>speech-dispatcher-sys&lt;/code>
+crate can find the &lt;code>speechd&lt;/code> libraries it requires. At the time I wrote the
+first derivation I found &lt;a href="https://twitter.com/a_hoverbear">Hoverbear&lt;/a>&amp;rsquo;s &lt;a href="https://hoverbear.org/blog/rust-bindgen-in-nix/">blog post on the
+subject&lt;/a> and it made this 100x easier to figure out. 🦸&lt;/p>
+&lt;p>The derivation has remained mostly unchanged until last week when I discovered
+a nice way to clean up all that extra configuration. It turns out the extra
+&lt;code>preBuild&lt;/code> and path fiddling to get &lt;code>bindgen&lt;/code> configured can be replaced by
+a &lt;a href="https://github.com/NixOS/nixpkgs/blob/master/doc/languages-frameworks/rust.section.md#hooks-hooks">hook&lt;/a> that was added to the shared Rust platform framework in
+~Feb: &lt;code>rustPlatform.bindgenHook&lt;/code>.&lt;/p>
+&lt;p>A quick &lt;a href="https://github.com/NixOS/nixpkgs/pull/194525">cleanup PR&lt;/a> later and the &lt;a href="https://github.com/NixOS/nixpkgs/blob/deed43a7257ea861e00d627b98f0e62d2072d790/pkgs/games/blightmud/default.nix">derivation&lt;/a> is now much
+shorter and a lot less custom. It felt good to cut out that complexity and it
+was interesting to read through the platform framework implementation of the
+hook (&lt;em>see &lt;a href="https://github.com/NixOS/nixpkgs/blob/b784c5ae63dd288375af1b4d37b8a27dd8061887/pkgs/build-support/rust/hooks/default.nix#L94-L101">here&lt;/a>, &lt;a href="https://github.com/NixOS/nixpkgs/blob/b784c5ae63dd288375af1b4d37b8a27dd8061887/pkgs/build-support/rust/hooks/rust-bindgen-hook.sh">here&lt;/a>, and &lt;a href="https://github.com/NixOS/nixpkgs/blob/8ff7b290e6dd47d7ed24c6d156ba60fc3c83f100/pkgs/development/tools/rust/bindgen/wrapper.sh">here&lt;/a>&lt;/em>) to
+compare to the approach I used.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;p>&lt;img src="./choppingmall.jpg" alt="Chopping Mall">&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://www.imdb.com/title/tt0090837/">Chopping Mall (1986)&lt;/a>. Look at that title font! Truly one of the
+least intimidating killer robot designs you could imagine. It&amp;rsquo;s a flop of
+a movie, but I really dig the late 80s mall setting.&lt;/li>
+&lt;li>&lt;a href="https://gynvael.coldwind.pl/?lang=en&amp;amp;id=754">Hello World under the microscope&lt;/a>. This work makes other &amp;ldquo;deep
+dives&amp;rdquo; look awfully shallow in comparison. Layer after layer of abstractions
+peeled away. 🔬&lt;/li>
+&lt;li>&lt;a href="https://lwn.net/SubscriberLink/910435/8edb2c6f835f960a/">Fingerprinting systems with TCP source-port selection&lt;/a>.
+A really clever bit of research. It&amp;rsquo;s interesting to see a defensive mechanism
+(&lt;em>&lt;a href="https://www.rfc-editor.org/rfc/rfc6056">RFC 6056&lt;/a> source port randomization&lt;/em>) enabling other new attacks.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>🤖💬 &lt;em>THANK YOU, HAVE A NICE DAY&lt;/em>&lt;/p>
+&lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+&lt;iframe src="https://www.youtube.com/embed/7PsITAWy5C0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
+&lt;/div></description></item><item><title>WWL</title><link>https://log.woodweb.ca/2022/10/wwl/</link><pubDate>Tue, 04 Oct 2022 12:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/wwl/</guid><description>&lt;h1 id="starting">Starting&lt;/h1>
+&lt;p>I love reading people writing about what they&amp;rsquo;re working on. I hate writing
+about what I&amp;rsquo;m working on. Who would want to read that? Incongruence be damned.&lt;/p>
+&lt;h1 id="fall">Fall&lt;/h1>
+&lt;p>Summer is over. That&amp;rsquo;s always a bitter pill to swallow but the colours make up
+for it in the short term. Great mushroom hunting too.&lt;/p>
+&lt;p>&lt;img src="./colours.jpg" alt="Colours">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;p>Here&amp;rsquo;s some stuff I&amp;rsquo;ve been up to.&lt;/p>
+&lt;h2 id="ldmud-nixpkgs">LDMud Nixpkgs&lt;/h2>
+&lt;p>In ~summer 2021 I got interested in &lt;a href="https://en.wikipedia.org/wiki/LPMud">LPMuds&lt;/a> again. This is a niche within
+a niche but the &lt;a href="https://mud.fandom.com/wiki/LPC">LPC&lt;/a> programming language was the first language I really &lt;em>got&lt;/em>
+and so it always has a special place in my heart.&lt;/p>
+&lt;p>My LPMud game engine of choice is &lt;a href="http://ldmud.eu/">LDMud&lt;/a>, a piece of software that can trace
+its lineage 30+ years into the past. Refreshingly it&amp;rsquo;s still under active
+development and has gained some really cool features recently (including
+&lt;a href="https://github.com/ldmud/ldmud/blob/master/doc/concepts/python">Python support&lt;/a> to bridge LPC/Python).&lt;/p>
+&lt;p>If MUDs, and LPMuds in particular, weren&amp;rsquo;t niche enough why not add another
+dimension: NixOS. Recently I &lt;a href="https://github.com/NixOS/nixpkgs/pull/190682">packaged LDMud 3.6.6 for Nixpkgs&lt;/a>. I&amp;rsquo;ve
+been using this derivation locally for some time for a ✨ &lt;em>secret
+project&lt;/em> ✨ and I&amp;rsquo;m happy it was able to be merged upstream. The &lt;a href="https://github.com/ldmud/ldmud/blob/64b3588a13fb0c761da62d6deb56dfa380b03c6f/COPYRIGHT#L10-L14">LDMud
+copyright&lt;/a> is unique in its non-commercial requirement and so had to be added as
+a &amp;ldquo;non-free&amp;rdquo; distributable package.&lt;/p>
+&lt;h2 id="vexation">VeXation&lt;/h2>
+&lt;p>In January 2019 I started a project called &lt;a href="https://log.vexation.ca">VeXation&lt;/a>, chronicling
+my (&lt;em>very intermittent&lt;/em>) progress writing a from-scratch Windows 95 PE file
+infector virus using Borland Turbo Assembler 5. This project has been a lot of
+fun, but is also hard to work on in small chunks and so tends to go long periods
+of time between updates.&lt;/p>
+&lt;p>My last post was in April 2021 when I &lt;a href="https://log.vexation.ca/2021/04/switching-to-qemu/">re-implemented my development
+environment&lt;/a> with &lt;a href="https://www.qemu.org/">Qemu&lt;/a>. Since then I actually &lt;em>did&lt;/em>
+make a bit more progress on the virus and implemented a small patch to preserve
+the last modified date of infected &lt;code>.exe&lt;/code>&amp;rsquo;s. After that I got stuck in the
+tarpit that was my &lt;a href="https://www.gatsbyjs.com/">Gatsby&lt;/a> site-generator setup. It was always a bit of a shaky
+foundation for me to build on as someone that doesn&amp;rsquo;t actually understand React,
+but letting it fall ~2 major versions out of date was the final straw.&lt;/p>
+&lt;p>Recently I re-implemented the site using &lt;a href="https://gohugo.io/">Hugo&lt;/a>. My needs are very
+straight-forward and the Go ecosystem is familiar in a way the JS ecosystem is
+not. This time around I also wrote &lt;a href="https://github.com/cpu/vexation/blob/main/site/flake.nix">a Nix flake&lt;/a> to make it
+super duper easy to reproduce the entire build environment. The Github &lt;a href="https://github.com/cpu/vexation/blob/main/.github/workflows/deploy.yml">actions
+workflow&lt;/a> that publishes the site is pinned to the exact version of Hugo and the
+theme I&amp;rsquo;m using in my local env. Big thanks to &lt;a href="https://ayats.org/">Fernando Ayats&lt;/a>&amp;rsquo;s &amp;ldquo;static blog
+with hugo and nix flakes&amp;rdquo; post (&lt;em>edit: appears gone now!&lt;/em>) for offering a great
+starting point to adapt.&lt;/p>
+&lt;p>Here&amp;rsquo;s hoping all these shaved yaks make it easier to write the next post.
+🤡&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;ul>
+&lt;li>The &lt;a href="https://robertheaton.com/2018/12/17/wavefunction-collapse-algorithm/">Wavefunction Collapse Algorithm&lt;/a>. A stupid name for an interesting
+technique for procedurally generating &amp;ldquo;things&amp;rdquo; (&lt;em>textures&lt;/em>, &lt;em>maps&lt;/em>, &lt;em>towns&lt;/em>)
+with the same overall vibe as a set of inputs.&lt;/li>
+&lt;li>The &lt;a href="https://dolphin-emu.org/blog/">Dolphin Progress Reports&lt;/a>. Incredible wizardry. Really great technical
+writing covering said wizardry. I wish every long running free software
+project published reports like these. 😍&lt;/li>
+&lt;li>The &lt;a href="https://en.wikipedia.org/wiki/The_Outer_Limits_(1995_TV_series)">Outer Limits (1995)&lt;/a>. &lt;em>There is nothing wrong with your
+television set. Do not attempt to adjust the picture.&lt;/em> What if X-Files cross
+Twilight Zone with less money and coherence. Another 1990&amp;rsquo;s production largely
+filmed in BC.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="crow.jpg" alt="crow">&lt;/p></description></item></channel></rss>
