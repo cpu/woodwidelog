@@ -22,6 +22,7 @@ theme = "archie"
   customcss = ["css/custom.css"]
   images = ["/2022/10/wwl/crow.small.jpg"]
   mainSections = [ "log" ]
+  rssSections = [ "posts", "articles" ]
 
 [[params.social]]
   name = "GitHub"
