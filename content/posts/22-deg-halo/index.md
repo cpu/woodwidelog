@@ -2,6 +2,7 @@
 title: "22° halo"
 summary: Moon ring, Prototext, Pentium III.
 date: 2022-12-26T08:00:00-04:00
+type: log
 ---
 
 Living somewhere with a winter that's extreme even by Canadian standards has

@@ -2,6 +2,7 @@
 title: "To Clear Skies"
 summary: Nix Flakes, deploy-rs, Blightspell.
 date: 2023-03-26T08:00:00-04:00
+type: log
 ---
 
 Since February I've been working on regaining my focus. It feels like something

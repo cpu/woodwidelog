@@ -2,6 +2,7 @@
 title: "Carcinisation"
 summary: Snowshoeing, NAWS, Trust-DNS.
 date: 2023-01-15T08:00:00-04:00
+type: log
 ---
 
 Winter has blessed my area with ample snow. January is a classic prompt for 

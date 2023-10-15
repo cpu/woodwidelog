@@ -2,6 +2,7 @@
 title: "New and Old"
 summary: Rustls, 30 year old LPC.
 date: 2023-05-07T08:00:00-04:00
+type: log
 ---
 
 Spring has sprung and it's a potent reminder of how much I value contrast.

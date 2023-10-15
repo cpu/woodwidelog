@@ -21,6 +21,7 @@ theme = "archie"
   description = "An attempt at a journal slash dev log by @cpu."
   customcss = ["css/custom.css"]
   images = ["/2022/10/wwl/crow.small.jpg"]
+  mainSections = [ "log" ]
 
 [[params.social]]
   name = "GitHub"
@@ -36,16 +37,21 @@ theme = "archie"
   posts = '/:year/:month/:title'
 
 [[menu.main]]
-  name = "Home"
+  name = "Log"
   url = "/"
   weight = 1
 
 [[menu.main]]
+  name = "Articles"
+  url = "/articles"
+  weight = 2
+
+[[menu.main]]
   name = "Archive"
   url = "/posts"
-  weight = 2
+  weight = 3
 
 [[menu.main]]
   name = "About"
   url = "/about"
-  weight = 3
+  weight = 4

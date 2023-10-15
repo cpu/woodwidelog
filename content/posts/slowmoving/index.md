@@ -2,6 +2,7 @@
 title: "Slow Moving"
 summary: Butterfly. Blightmud. Bad movies.
 date: 2022-10-15T08:00:00-04:00
+type: log
 ---
 
 Its been hard to marshal energy to get up to much. The combination of changing

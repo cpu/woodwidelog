@@ -2,6 +2,7 @@
 title: "Rock Replace"
 summary: Mudlet, NixPkgs Lua Overrides, Bowling.
 date: 2022-11-09T08:00:00-04:00
+type: log
 ---
 
 I hear federation is cool now. If you're reading this, start a blog. It's the
