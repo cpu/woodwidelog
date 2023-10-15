@@ -7,17 +7,19 @@ aliases = ["contact"]
 
 An attempt at a journal slash dev log by [@cpu](https://twitter.com).
 
-I like: Go, applied cryptography, Rust, mountain bikes, ACME, computer security,
+🛠️💕 -- I like: Go, applied cryptography, Rust, mountain bikes, ACME, computer security,
 mushrooms, Nix/NixOS, death|black metal, Linux, free software, skateboards, DNS,
 emoji, snowboards, Wireguard, living in the woods, MUDs, LPC, & reading other
 people’s dev logs.
 
-I've worked at: [Block]/[Square], [Let's Encrypt]/[ISRG], [Fastly], [Leviathan
+🚧🏗️ -- I've worked at: [Block]/[Square], [Let's Encrypt]/[ISRG], [Fastly], [Leviathan
 Security Group], & the [Carleton Computer Security Lab]. I helped make [ACME]
 and I've contributed to free software like [Boulder], [Nixpkgs], [ZLint], and
 [Streisand].
 
-I've lived in: the greater Toronto area, Ottawa, San Francisco, Montreal, and
+🕰️🦀 -- Recently: I've been learning Rust and contributing to the [Rustls] ecosystem.
+
+🌎🏡 -- I've lived in: the greater Toronto area, Ottawa, San Francisco, Montreal, and
 the Laurentides.
 
 [Block]: https://block.xyz/
@@ -32,3 +34,4 @@ the Laurentides.
 [Nixpkgs]: https://github.com/NixOS/nixpkgs
 [ZLint]: https://github.com/zmap/zlint
 [Streisand]: https://github.com/StreisandEffect/streisand
+[Rustls]: https://github.com/rustls/rustls
