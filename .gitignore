@@ -10,6 +10,7 @@ hugo_stats.json
 
 # Nix
 result
+/.direnv
 
 # Themes are managed with Nix - local clones sometimes helpful for debuggin'
 themes/
