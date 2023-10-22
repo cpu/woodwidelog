@@ -32,10 +32,10 @@ the blog train with some quick updates. Stay tuned. :-)&lt;/p>
 &lt;h3 id="blightmud">Blightmud&lt;/h3>
 &lt;p>Readers of my dev log know I can&amp;rsquo;t resist talking about &lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a> and of
 course I quickly found a way to combine my new energy for Rustls with my
-existing love of that project. Outside of work hours I &lt;a href="https://github.com/Blightmud/Blightmud/pull/775">replaced&lt;/a> Blightmud&amp;rsquo;s
-code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
+existing love of that project. Outside of work hours I &lt;a href="https://github.com/Blightmud/Blightmud/pull/775">converted&lt;/a> Blightmud&amp;rsquo;s
+existing code for connecting to MUDs over TLS from using OpenSSL to Rustls. Besides being
 a spiritual win it ended up fixing a mysterious crash on MacOS that nobody had
-been able to diagnose. Replacing a separate libcurl based feature to use a pure
+been able to diagnose. Replacing a separate &lt;code>libcurl&lt;/code> based feature to use a pure
 Rust alternative also &lt;a href="https://github.com/Blightmud/Blightmud/pull/782#issuecomment-1501197372">fixed&lt;/a> some long-standing flaky unit tests so it&amp;rsquo;s no
 fluke! I can&amp;rsquo;t overstate how pleasant I&amp;rsquo;ve been finding Rust and its surrounding
 ecosystem.&lt;/p>
@@ -461,11 +461,11 @@ of backstory.&lt;/p>
 a miserable experience. Serious enjoyment requires niceties like scripting and
 support for extra protocol additions like &lt;a href="https://nexus.ironrealms.com/GMCP">GMCP&lt;/a>, TLS, and &lt;a href="https://www.rfc-editor.org/rfc/rfc2066">charset
 negotiation&lt;/a>. Some folks prefer graphical clients, and excellent free software
-like &lt;a href="https://www.mudlet.org/">Mudlet&lt;/a> have sprung up in recent years to offer a polished, multi-platform,
+like &lt;a href="https://www.mudlet.org/">Mudlet&lt;/a> sprung up in recent years to offer a polished, multi-platform,
 graphical MUD client perfect for those people.&lt;/p>
 &lt;p>Personally I&amp;rsquo;ve always preferred terminal clients because of how nicely they
 work over SSH paired with &lt;a href="https://github.com/tmux/tmux">Tmux&lt;/a>. Historically my MUD client of choice (&lt;em>for 15+
-years!&lt;/em>) has been &lt;a href="https://en.wikipedia.org/wiki/TinyFugue">TinyFugue&lt;/a>. Unfortunately, its development is fragmented, it
+years!&lt;/em>) has been &lt;a href="https://tinyfugue.sourceforge.net/">TinyFugue&lt;/a>. Unfortunately, its development is fragmented, it
 uses a custom scripting language (&lt;em>ugh&lt;/em>) and it&amp;rsquo;s implemented in C (&lt;em>ugh++&lt;/em>).&lt;/p>
 &lt;p>Thankfully within the last year I discovered an excellent alternative:
 &lt;a href="https://github.com/blightmud/blightmud">Blightmud&lt;/a>. It&amp;rsquo;s actively developed, supports TLS, uses Lua for its

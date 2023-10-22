@@ -1,0 +1,26 @@
+:root{
+--maincolor: #556F44;
+--bordercl:#95BF74;
+--callouctcolor:#95BF74;
+--hovercolor:#659B5E;
+--darkMaincolor: #95BF74;
+}
+
+footer {
+  border-top: 0.2em dotted var(--bordercl);
+}
+
+li {
+  font-family: 'Fira Sans', sans-serif;
+  line-height: 1.5;
+  padding-top: 0.35em;
+}
+
+ul > li::before {
+  content: '‣';
+  padding-right: 0.5em;
+}
+
+a {
+  border-bottom: 2px solid var(--maincolor);
+}
