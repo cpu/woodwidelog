@@ -2,18 +2,18 @@
 <meta name=description content="A Nix Flake for a Rust project with non-trivial requirements."><meta property="og:image" content><meta property="og:title" content="A Beyond-the-basics Rust Flake"><meta property="og:description" content="A Nix Flake for a Rust project with non-trivial requirements."><meta property="og:type" content="article"><meta property="og:url" content="https://log.woodweb.ca/articles/rust-flake/"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta property="article:section" content="articles"><meta property="article:published_time" content="2023-11-26T08:00:00-04:00"><meta property="article:modified_time" content="2023-11-26T08:00:00-04:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="A Beyond-the-basics Rust Flake"><meta name=twitter:description content="A Nix Flake for a Rust project with non-trivial requirements."><script src=https://log.woodweb.ca/js/feather.min.js></script><link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.d10d882a0feb2833d6bb41c11b088fd0710c01566f5092017beb42fa48bc7762.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Log</a>
 <a href=/articles>Articles</a>
 <a href=/posts>Archive</a>
-<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>A Beyond-the-basics Rust Flake</h1><div class=meta>Posted on Nov 26, 2023</div></div><section class=body><h1 id=about>About</h1><p>There are many resources for writing <a href=https://zero-to-nix.com/concepts/flakes>Nix flakes</a> for Rust projects but they can
-often be too simple. They may focus on projects without complex native
-code dependencies, or only offer a single development environment with a fixed
-Rust toolchain version.</p><p>While working on Flakes for my own Rust projects I&rsquo;ve found moving beyond the
-basics took experimentation and combining parts from many different resources.
-This article is my attempt to document a complete example that&rsquo;s worked for
-me. It offers:</p><ul><li>Support for native code dependencies.<ul><li>In particular, &ldquo;-sys&rdquo; crate dependencies that use <a href=https://github.com/mozilla/cbindgen>cbindgen</a> for
-generating <a href=https://doc.rust-lang.org/nomicon/ffi.html>FFI</a> bindings.</li></ul></li><li>A development environment for three Rust versions:<ul><li>A Minimum Supported Rust Version (MSRV).</li><li>Latest Stable.</li><li>A selected Nightly.</li></ul></li><li>Multiple output packages, with different Cargo features selected.</li></ul><h1 id=the-flake>The Flake</h1><p>Without further ado, here&rsquo;s the final Flake. It packages a simple Rust binary
-project from a Cargo project located in the same directory. The Cargo project
-produces a single command-line binary, <code>example</code>, that demonstrates
-text-to-speech on Linux. It has an optional <code>foobar</code> feature that when enabled
-will change the spoken message. You can find the complete example in
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>A Beyond-the-basics Rust Flake</h1><div class=meta>Posted on Nov 26, 2023</div></div><section class=body><h1 id=about>About</h1><p>There are many resources for writing <a href=https://zero-to-nix.com/concepts/flakes>Nix flakes</a> for Rust projects but in my
+experience they can often be too simple. They may focus on projects without
+complex native code dependencies, or only offer a single development environment
+with a fixed Rust toolchain version.</p><p>I think Nix thrives at addressing these kinds of complications but its hard
+to find examples in the space between trivial and omg-this-is-too-many-things.
+This page is my attempt to rectify that by documenting a Rust project flake that
+goes beyond a basic example by showing:</p><ul><li>Support for native code dependencies.<ul><li>In particular, &ldquo;-sys&rdquo; crate dependencies that use <a href=https://github.com/mozilla/cbindgen>cbindgen</a> for
+generating <a href=https://doc.rust-lang.org/nomicon/ffi.html>FFI</a> bindings.</li></ul></li><li>A development environment for three Rust versions:<ul><li>A Minimum Supported Rust Version (MSRV).</li><li>Latest Stable.</li><li>A selected Nightly.</li></ul></li><li>Multiple output packages, with different Cargo features selected.</li></ul><h1 id=the-flake>The Flake</h1><p>Without further ado, here&rsquo;s the final flake. It packages a simple Rust binary
+command line program from a Cargo project located in the same directory. The CLI
+binary, <code>example</code>, demonstrates text-to-speech on Linux as an excuse to use a more
+complex dependency. The crate also has an optional <code>foobar</code> feature that when
+enabled will change the spoken message. You can find the complete example in
 <a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>.</p><p>The Rust code depends on the <a href=https://crates.io/crates/tts>tts-rs</a> crate for its text-to-speech magic, which
 in turn uses the <a href=https://crates.io/crates/speech-dispatcher>speech-dispatcher</a> and <a href=https://crates.io/crates/speech-dispatcher-sys>speech-dispatcher-sys</a> crates. On
 Linux, the <code>-sys</code> crate uses <a href=https://www.freedesktop.org/wiki/Software/pkg-config/>pkg-config</a> and <a href=https://github.com/mozilla/cbindgen>cbindgen</a> to generate FFI headers
@@ -81,7 +81,7 @@ would require manually installing extra system packages (using <code>apt-get</co
 </span></span><span style=display:flex><span>        };
 </span></span><span style=display:flex><span>    };
 </span></span><span style=display:flex><span>}
-</span></span></code></pre></div><h1 id=usage>Usage</h1><h2 id=default-package>Default Package</h2><p>After cloning the repo, you can run the default Flake output package directly:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run
+</span></span></code></pre></div><h1 id=usage>Usage</h1><h2 id=default-package>Default Package</h2><p>After cloning the repo, you can run the default flake output package directly:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run
 </span></span></code></pre></div><p>Or, to run the output package that doesn&rsquo;t enable the &ldquo;foobar&rdquo; feature:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run <span style=color:#e6db74>&#39;.#example-base&#39;</span>
 </span></span></code></pre></div><h2 id=dev-environments>Dev. Environments</h2><p>You can quickly enter a development environment for one of the three Rust
 versions:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Rust nightly (default):</span>
@@ -90,8 +90,8 @@ versions:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background
 </span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#stable&#39;</span>
 </span></span><span style=display:flex><span><span style=color:#75715e># MSRV:</span>
 </span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#msrv&#39;</span>
-</span></span></code></pre></div><h3 id=cargo>Cargo</h3><p>In each development environment you&rsquo;ll have the usual <code>cargo</code> tooling and any
-extra <code>devDeps</code> specified:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>rustc --version <span style=color:#f92672>&amp;&amp;</span> gdb --version <span style=color:#f92672>&amp;&amp;</span> speech-dispatcher --version
+</span></span></code></pre></div><h3 id=cargo>Cargo</h3><p>In each development environment you&rsquo;ll have the usual <code>cargo</code> tooling, the
+required native dependencies and any extra <code>devDeps</code> specified:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>rustc --version <span style=color:#f92672>&amp;&amp;</span> speech-dispatcher --version <span style=color:#f92672>&amp;&amp;</span> gdb --version
 </span></span><span style=display:flex><span>cargo fmt <span style=color:#f92672>&amp;&amp;</span> cargo clippy <span style=color:#f92672>&amp;&amp;</span> cargo test
 </span></span><span style=display:flex><span>cargo run
 </span></span><span style=display:flex><span>cargo run --all-features --release
@@ -115,7 +115,9 @@ the heavy lifting. No need to muck with <code>LIBCLANG_PATH</code>.</li><li><cod
 building a Nix flake output from a Rust project. It makes it easy to define
 multiple flake package outputs that differ only in Cargo feature selections.</li><li><code>mkDevShell</code> - this is a small helper function that reduces duplication
 creating a development shell with a specific Rust version. It also sets the
-<code>RUST_SRC_PATH</code> that many IDEs will use to find the Rust stdlib.</li></ol><h2 id=why-bother>Why bother?</h2><p>This might seem like a lot of work. Why not just use <code>rustup</code> to manage three
+<code>RUST_SRC_PATH</code> that many IDEs will use to find the Rust stdlib.</li><li><code>inputs</code> - there are lots of ways to build Rust packages in Nix. Oxalica&rsquo;s
+<a href=https://github.com/oxalica/rust-overlay>rust-overlay</a> has given me minimal grief, and I think <a href=https://flake.parts/>flake parts</a> add
+a lot of value as flake complexity scales up. YMMV.</li></ol><h2 id=why-bother>Why bother?</h2><p>This might seem like a lot of work. Why not just use <code>rustup</code> to manage three
 Rust versions and call it a day? For me there are a few primary advantages (<em>and
 lots of smaller ones!</em>):</p><ul><li>Rustup can&rsquo;t manage system level dependencies. Typically you&rsquo;ll have to
 describe which packages a user needs to install before building, or write
