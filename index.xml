@@ -3,7 +3,7 @@
 experience they can often be too simple. They may focus on projects without
 complex native code dependencies, or only offer a single development environment
 with a fixed Rust toolchain version.&lt;/p>
-&lt;p>I think Nix thrives at addressing these kinds of complications but its hard
+&lt;p>I think Nix thrives at addressing these kinds of complications but it&amp;rsquo;s hard
 to find examples in the space between trivial and omg-this-is-too-many-things.
 This page is my attempt to rectify that by documenting a Rust project flake that
 goes beyond a basic example by showing:&lt;/p>
@@ -24,8 +24,8 @@ generating &lt;a href="https://doc.rust-lang.org/nomicon/ffi.html">FFI&lt;/a> bi
 &lt;li>Multiple output packages, with different Cargo features selected.&lt;/li>
 &lt;/ul>
 &lt;h1 id="the-flake">The Flake&lt;/h1>
-&lt;p>Without further ado, here&amp;rsquo;s the final flake. It packages a simple Rust binary
-command line program from a Cargo project located in the same directory. The CLI
+&lt;p>Without further ado, here&amp;rsquo;s the final flake. It packages a simple Rust command
+line program from a Cargo project located in the same directory. The CLI
 binary, &lt;code>example&lt;/code>, demonstrates text-to-speech on Linux as an excuse to use a more
 complex dependency. The crate also has an optional &lt;code>foobar&lt;/code> feature that when
 enabled will change the spoken message. You can find the complete example in
@@ -176,13 +176,17 @@ the project in an ephemeral shell:&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>nix run github:cpu/rust-flake
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
-&lt;li>It works for more than just Rust. As one example, ff your project needs Python
+&lt;li>It works for more than just Rust. As one example, if your project needs Python
 to generate test data you can easily extend the flake to manage Python runtime
 versions and &lt;code>pip&lt;/code> dependencies.&lt;/li>
 &lt;li>You can reuse the same reproducible dev. environments for your CI. This
 eliminates the classic blunders that ensue when the native dependency versions
 or toolchain versions installed in CI drift from what you use locally.&lt;/li>
 &lt;/ul>
+&lt;p>Other tools like Docker aim to solve some of the same problems but do it in ways
+I&amp;rsquo;ve often found clumsy to use or that fell short in different areas. Nix isn&amp;rsquo;t
+without its own downsides but for me the time invested in learning it continues
+to pay off.&lt;/p>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
 &lt;p>This flake isn&amp;rsquo;t too complicated, but it can take some time to combine the
 bits and pieces from different documentation sources to make a unified whole.

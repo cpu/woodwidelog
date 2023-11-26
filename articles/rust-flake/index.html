@@ -5,12 +5,12 @@
 <a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>A Beyond-the-basics Rust Flake</h1><div class=meta>Posted on Nov 26, 2023</div></div><section class=body><h1 id=about>About</h1><p>There are many resources for writing <a href=https://zero-to-nix.com/concepts/flakes>Nix flakes</a> for Rust projects but in my
 experience they can often be too simple. They may focus on projects without
 complex native code dependencies, or only offer a single development environment
-with a fixed Rust toolchain version.</p><p>I think Nix thrives at addressing these kinds of complications but its hard
+with a fixed Rust toolchain version.</p><p>I think Nix thrives at addressing these kinds of complications but it&rsquo;s hard
 to find examples in the space between trivial and omg-this-is-too-many-things.
 This page is my attempt to rectify that by documenting a Rust project flake that
 goes beyond a basic example by showing:</p><ul><li>Support for native code dependencies.<ul><li>In particular, &ldquo;-sys&rdquo; crate dependencies that use <a href=https://github.com/mozilla/cbindgen>cbindgen</a> for
-generating <a href=https://doc.rust-lang.org/nomicon/ffi.html>FFI</a> bindings.</li></ul></li><li>A development environment for three Rust versions:<ul><li>A Minimum Supported Rust Version (MSRV).</li><li>Latest Stable.</li><li>A selected Nightly.</li></ul></li><li>Multiple output packages, with different Cargo features selected.</li></ul><h1 id=the-flake>The Flake</h1><p>Without further ado, here&rsquo;s the final flake. It packages a simple Rust binary
-command line program from a Cargo project located in the same directory. The CLI
+generating <a href=https://doc.rust-lang.org/nomicon/ffi.html>FFI</a> bindings.</li></ul></li><li>A development environment for three Rust versions:<ul><li>A Minimum Supported Rust Version (MSRV).</li><li>Latest Stable.</li><li>A selected Nightly.</li></ul></li><li>Multiple output packages, with different Cargo features selected.</li></ul><h1 id=the-flake>The Flake</h1><p>Without further ado, here&rsquo;s the final flake. It packages a simple Rust command
+line program from a Cargo project located in the same directory. The CLI
 binary, <code>example</code>, demonstrates text-to-speech on Linux as an excuse to use a more
 complex dependency. The crate also has an optional <code>foobar</code> feature that when
 enabled will change the spoken message. You can find the complete example in
@@ -126,11 +126,14 @@ by different developers in-sync with one another across different OSes is
 a nightmare. Using a Nix flake makes this trivially reproducible.</li><li>Users of <code>nix</code> or <code>NixOS</code> can consume your project through the flake,
 effortlessly adding the flake as an input to their own Nix flakes, or running
 the project in an ephemeral shell:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run github:cpu/rust-flake
-</span></span></code></pre></div><ul><li>It works for more than just Rust. As one example, ff your project needs Python
+</span></span></code></pre></div><ul><li>It works for more than just Rust. As one example, if your project needs Python
 to generate test data you can easily extend the flake to manage Python runtime
 versions and <code>pip</code> dependencies.</li><li>You can reuse the same reproducible dev. environments for your CI. This
 eliminates the classic blunders that ensue when the native dependency versions
-or toolchain versions installed in CI drift from what you use locally.</li></ul><h2 id=conclusion>Conclusion</h2><p>This flake isn&rsquo;t too complicated, but it can take some time to combine the
+or toolchain versions installed in CI drift from what you use locally.</li></ul><p>Other tools like Docker aim to solve some of the same problems but do it in ways
+I&rsquo;ve often found clumsy to use or that fell short in different areas. Nix isn&rsquo;t
+without its own downsides but for me the time invested in learning it continues
+to pay off.</p><h2 id=conclusion>Conclusion</h2><p>This flake isn&rsquo;t too complicated, but it can take some time to combine the
 bits and pieces from different documentation sources to make a unified whole.
 Hopefully this example helps demystify the complete picture.</p><p>You can find the complete example with the accompanying Rust crate in
 <a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>. That repo also shows how to set up GitHub actions CI to use
