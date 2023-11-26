@@ -1,0 +1,139 @@
+<!doctype html><html><head lang=en><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>A Beyond-the-basics Rust Flake - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="A Nix Flake for a Rust project with non-trivial requirements."><meta property="og:image" content><meta property="og:title" content="A Beyond-the-basics Rust Flake"><meta property="og:description" content="A Nix Flake for a Rust project with non-trivial requirements."><meta property="og:type" content="article"><meta property="og:url" content="https://log.woodweb.ca/articles/rust-flake/"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta property="article:section" content="articles"><meta property="article:published_time" content="2023-11-26T08:00:00-04:00"><meta property="article:modified_time" content="2023-11-26T08:00:00-04:00"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="A Beyond-the-basics Rust Flake"><meta name=twitter:description content="A Nix Flake for a Rust project with non-trivial requirements."><script src=https://log.woodweb.ca/js/feather.min.js></script><link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.ac08a4c9714baa859217f92f051deb58df2938ec352b506df655005dcaf98cc0.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.d10d882a0feb2833d6bb41c11b088fd0710c01566f5092017beb42fa48bc7762.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Log</a>
+<a href=/articles>Articles</a>
+<a href=/posts>Archive</a>
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>A Beyond-the-basics Rust Flake</h1><div class=meta>Posted on Nov 26, 2023</div></div><section class=body><h1 id=about>About</h1><p>There are many resources for writing <a href=https://zero-to-nix.com/concepts/flakes>Nix flakes</a> for Rust projects but they can
+often be too simple. They may focus on projects without complex native
+code dependencies, or only offer a single development environment with a fixed
+Rust toolchain version.</p><p>While working on Flakes for my own Rust projects I&rsquo;ve found moving beyond the
+basics took experimentation and combining parts from many different resources.
+This article is my attempt to document a complete example that&rsquo;s worked for
+me. It offers:</p><ul><li>Support for native code dependencies.<ul><li>In particular, &ldquo;-sys&rdquo; crate dependencies that use <a href=https://github.com/mozilla/cbindgen>cbindgen</a> for
+generating <a href=https://doc.rust-lang.org/nomicon/ffi.html>FFI</a> bindings.</li></ul></li><li>A development environment for three Rust versions:<ul><li>A Minimum Supported Rust Version (MSRV).</li><li>Latest Stable.</li><li>A selected Nightly.</li></ul></li><li>Multiple output packages, with different Cargo features selected.</li></ul><h1 id=the-flake>The Flake</h1><p>Without further ado, here&rsquo;s the final Flake. It packages a simple Rust binary
+project from a Cargo project located in the same directory. The Cargo project
+produces a single command-line binary, <code>example</code>, that demonstrates
+text-to-speech on Linux. It has an optional <code>foobar</code> feature that when enabled
+will change the spoken message. You can find the complete example in
+<a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>.</p><p>The Rust code depends on the <a href=https://crates.io/crates/tts>tts-rs</a> crate for its text-to-speech magic, which
+in turn uses the <a href=https://crates.io/crates/speech-dispatcher>speech-dispatcher</a> and <a href=https://crates.io/crates/speech-dispatcher-sys>speech-dispatcher-sys</a> crates. On
+Linux, the <code>-sys</code> crate uses <a href=https://www.freedesktop.org/wiki/Software/pkg-config/>pkg-config</a> and <a href=https://github.com/mozilla/cbindgen>cbindgen</a> to generate FFI headers
+for the native <a href=https://wiki.archlinux.org/title/Speech_dispatcher>speechd</a> dependency. Getting this working reliable without Nix
+would require manually installing extra system packages (using <code>apt-get</code>, <code>yum</code>,
+<code>brew</code>, etc) and be difficult to reproduce consistently across systems.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-nix data-lang=nix><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  inputs <span style=color:#f92672>=</span> {
+</span></span><span style=display:flex><span>    nixpkgs<span style=color:#f92672>.</span>url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;github:nixos/nixpkgs/nixos-unstable&#34;</span>;
+</span></span><span style=display:flex><span>    flake-parts<span style=color:#f92672>.</span>url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;github:hercules-ci/flake-parts&#34;</span>;
+</span></span><span style=display:flex><span>    rust-overlay<span style=color:#f92672>.</span>url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;github:oxalica/rust-overlay&#34;</span>;
+</span></span><span style=display:flex><span>  };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  outputs <span style=color:#f92672>=</span> inputs:
+</span></span><span style=display:flex><span>    inputs<span style=color:#f92672>.</span>flake-parts<span style=color:#f92672>.</span>lib<span style=color:#f92672>.</span>mkFlake { <span style=color:#66d9ef>inherit</span> inputs; } {
+</span></span><span style=display:flex><span>      systems <span style=color:#f92672>=</span> [ <span style=color:#e6db74>&#34;x86_64-linux&#34;</span> ];
+</span></span><span style=display:flex><span>      perSystem <span style=color:#f92672>=</span> { config<span style=color:#f92672>,</span> self&#39;<span style=color:#f92672>,</span> pkgs<span style=color:#f92672>,</span> lib<span style=color:#f92672>,</span> system<span style=color:#f92672>,</span> <span style=color:#f92672>...</span> }:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span>
+</span></span><span style=display:flex><span>          runtimeDeps <span style=color:#f92672>=</span> <span style=color:#66d9ef>with</span> pkgs; [ alsa-lib speechd ];
+</span></span><span style=display:flex><span>          buildDeps <span style=color:#f92672>=</span> <span style=color:#66d9ef>with</span> pkgs; [ pkg-config rustPlatform<span style=color:#f92672>.</span>bindgenHook ];
+</span></span><span style=display:flex><span>          devDeps <span style=color:#f92672>=</span> <span style=color:#66d9ef>with</span> pkgs; [ gdb ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          cargoToml <span style=color:#f92672>=</span> builtins<span style=color:#f92672>.</span>fromTOML (builtins<span style=color:#f92672>.</span>readFile <span style=color:#e6db74>./Cargo.toml</span>);
+</span></span><span style=display:flex><span>          msrv <span style=color:#f92672>=</span> cargoToml<span style=color:#f92672>.</span>package<span style=color:#f92672>.</span>rust-version;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          rustPackage <span style=color:#f92672>=</span> features:
+</span></span><span style=display:flex><span>            (pkgs<span style=color:#f92672>.</span>makeRustPlatform {
+</span></span><span style=display:flex><span>              cargo <span style=color:#f92672>=</span> pkgs<span style=color:#f92672>.</span>rust-bin<span style=color:#f92672>.</span>stable<span style=color:#f92672>.</span>latest<span style=color:#f92672>.</span>minimal;
+</span></span><span style=display:flex><span>              rustc <span style=color:#f92672>=</span> pkgs<span style=color:#f92672>.</span>rust-bin<span style=color:#f92672>.</span>stable<span style=color:#f92672>.</span>latest<span style=color:#f92672>.</span>minimal;
+</span></span><span style=display:flex><span>            })<span style=color:#f92672>.</span>buildRustPackage {
+</span></span><span style=display:flex><span>              <span style=color:#66d9ef>inherit</span> (cargoToml<span style=color:#f92672>.</span>package) name version;
+</span></span><span style=display:flex><span>              src <span style=color:#f92672>=</span> <span style=color:#e6db74>./.</span>;
+</span></span><span style=display:flex><span>              cargoLock<span style=color:#f92672>.</span>lockFile <span style=color:#f92672>=</span> <span style=color:#e6db74>./Cargo.lock</span>;
+</span></span><span style=display:flex><span>              buildFeatures <span style=color:#f92672>=</span> features;
+</span></span><span style=display:flex><span>              buildInputs <span style=color:#f92672>=</span> runtimeDeps;
+</span></span><span style=display:flex><span>              nativeBuildInputs <span style=color:#f92672>=</span> buildDeps;
+</span></span><span style=display:flex><span>              <span style=color:#75715e># Uncomment if your cargo tests require networking or otherwise</span>
+</span></span><span style=display:flex><span>              <span style=color:#75715e># don&#39;t play nicely with the Nix build sandbox:</span>
+</span></span><span style=display:flex><span>              <span style=color:#75715e># doCheck = false;</span>
+</span></span><span style=display:flex><span>            };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          mkDevShell <span style=color:#f92672>=</span> rustc:
+</span></span><span style=display:flex><span>            pkgs<span style=color:#f92672>.</span>mkShell {
+</span></span><span style=display:flex><span>              shellHook <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&#39;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                export RUST_SRC_PATH=</span><span style=color:#e6db74>${</span>pkgs<span style=color:#f92672>.</span>rustPlatform<span style=color:#f92672>.</span>rustLibSrc<span style=color:#e6db74>}</span><span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>              &#39;&#39;</span>;
+</span></span><span style=display:flex><span>              buildInputs <span style=color:#f92672>=</span> runtimeDeps;
+</span></span><span style=display:flex><span>              nativeBuildInputs <span style=color:#f92672>=</span> buildDeps <span style=color:#f92672>++</span> devDeps <span style=color:#f92672>++</span> [ rustc ];
+</span></span><span style=display:flex><span>            };
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>in</span> {
+</span></span><span style=display:flex><span>          _module<span style=color:#f92672>.</span>args<span style=color:#f92672>.</span>pkgs <span style=color:#f92672>=</span> <span style=color:#f92672>import</span> inputs<span style=color:#f92672>.</span>nixpkgs {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>inherit</span> system;
+</span></span><span style=display:flex><span>            overlays <span style=color:#f92672>=</span> [ (<span style=color:#f92672>import</span> inputs<span style=color:#f92672>.</span>rust-overlay) ];
+</span></span><span style=display:flex><span>          };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          packages<span style=color:#f92672>.</span>default <span style=color:#f92672>=</span> self&#39;<span style=color:#f92672>.</span>packages<span style=color:#f92672>.</span>example;
+</span></span><span style=display:flex><span>          devShells<span style=color:#f92672>.</span>default <span style=color:#f92672>=</span> self&#39;<span style=color:#f92672>.</span>devShells<span style=color:#f92672>.</span>nightly;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          packages<span style=color:#f92672>.</span>example <span style=color:#f92672>=</span> (rustPackage <span style=color:#e6db74>&#34;foobar&#34;</span>);
+</span></span><span style=display:flex><span>          packages<span style=color:#f92672>.</span>example-base <span style=color:#f92672>=</span> (rustPackage <span style=color:#e6db74>&#34;&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>          devShells<span style=color:#f92672>.</span>nightly <span style=color:#f92672>=</span> (mkDevShell (pkgs<span style=color:#f92672>.</span>rust-bin<span style=color:#f92672>.</span>selectLatestNightlyWith
+</span></span><span style=display:flex><span>            (toolchain: toolchain<span style=color:#f92672>.</span>default)));
+</span></span><span style=display:flex><span>          devShells<span style=color:#f92672>.</span>stable <span style=color:#f92672>=</span> (mkDevShell pkgs<span style=color:#f92672>.</span>rust-bin<span style=color:#f92672>.</span>stable<span style=color:#f92672>.</span>latest<span style=color:#f92672>.</span>default);
+</span></span><span style=display:flex><span>          devShells<span style=color:#f92672>.</span>msrv <span style=color:#f92672>=</span> (mkDevShell pkgs<span style=color:#f92672>.</span>rust-bin<span style=color:#f92672>.</span>stable<span style=color:#f92672>.</span><span style=color:#e6db74>${</span>msrv<span style=color:#e6db74>}</span><span style=color:#f92672>.</span>default);
+</span></span><span style=display:flex><span>        };
+</span></span><span style=display:flex><span>    };
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h1 id=usage>Usage</h1><h2 id=default-package>Default Package</h2><p>After cloning the repo, you can run the default Flake output package directly:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run
+</span></span></code></pre></div><p>Or, to run the output package that doesn&rsquo;t enable the &ldquo;foobar&rdquo; feature:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run <span style=color:#e6db74>&#39;.#example-base&#39;</span>
+</span></span></code></pre></div><h2 id=dev-environments>Dev. Environments</h2><p>You can quickly enter a development environment for one of the three Rust
+versions:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Rust nightly (default):</span>
+</span></span><span style=display:flex><span>nix develop
+</span></span><span style=display:flex><span><span style=color:#75715e># Rust stable:</span>
+</span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#stable&#39;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># MSRV:</span>
+</span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#msrv&#39;</span>
+</span></span></code></pre></div><h3 id=cargo>Cargo</h3><p>In each development environment you&rsquo;ll have the usual <code>cargo</code> tooling and any
+extra <code>devDeps</code> specified:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>rustc --version <span style=color:#f92672>&amp;&amp;</span> gdb --version <span style=color:#f92672>&amp;&amp;</span> speech-dispatcher --version
+</span></span><span style=display:flex><span>cargo fmt <span style=color:#f92672>&amp;&amp;</span> cargo clippy <span style=color:#f92672>&amp;&amp;</span> cargo test
+</span></span><span style=display:flex><span>cargo run
+</span></span><span style=display:flex><span>cargo run --all-features --release
+</span></span></code></pre></div><h3 id=quickly-running-a-command>Quickly running a command</h3><p>Rather than enter a development shell you can also run a command in the
+development environment directly:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#75715e># Nightly:</span>
+</span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#nightly&#39;</span> --command cargo test
+</span></span><span style=display:flex><span><span style=color:#75715e># Stable:</span>
+</span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#stable&#39;</span>  --command cargo test
+</span></span><span style=display:flex><span><span style=color:#75715e># MSRV:</span>
+</span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#msrv&#39;</span>    --command cargo test
+</span></span></code></pre></div><h2 id=details>Details</h2><p>Some points of interest:</p><ol><li><code>cargo.toml</code> - The Cargo metadata is read into a Nix binding, <code>cargoToml</code>,
+and used to avoid duplicating the project name, Cargo version, or MSRV in
+both the <code>Cargo.toml</code> and the Nix Flake.</li><li><code>runtimeDeps</code>, <code>buildDeps</code> and <code>devDeps</code> - I often have to remind myself the
+difference between <code>buildInputs</code> and <code>nativeBuildInputs</code> so I make these
+helpful bindings:<ol><li><code>runtimeDeps</code> corresponds to <code>buildInputs</code> - things needed at runtime.</li><li><code>buildDeps</code> corresponds to <code>nativeBuildInputs</code> - things needed only when
+building.</li><li><code>devDeps</code> is for extra dev. packages - things needed only in <code>nix develop</code>
+shells.</li></ol></li><li><code>cbindgen</code> - Getting this working requires <code>cbindgen</code> be able to find
+<code>libclang</code>, and <code>libclang</code> being able to find your native dependencies.
+There&rsquo;s a handy <code>bindgenHook</code> that we use for this purpose, letting it do all
+the heavy lifting. No need to muck with <code>LIBCLANG_PATH</code>.</li><li><code>withFeatures</code> - this is a small helper function that reduces duplication
+building a Nix Flake output from a Rust project. It makes it easy to define
+multiple Flake package outputs that differ only in Cargo feature selections.</li><li><code>mkDevShell</code> - this is a small helper function that reduces duplication
+creating a development shell with a specific Rust version. It also sets the
+<code>RUST_SRC_PATH</code> that many IDEs will use to find the Rust stdlib.</li></ol><h2 id=why-bother>Why bother?</h2><p>This might seem like a lot of work. Why not just use <code>rustup</code> to manage three
+Rust versions and call it a day? For me there are a few primary advantages (<em>and
+lots of smaller ones!</em>):</p><ul><li>Rustup can&rsquo;t manage system level dependencies. Typically you&rsquo;ll have to
+describe which packages a user needs to install before building, or write
+adhoc scripts to install the required dependencies. Keeping the versions used
+by different developers in-sync with one another across different OSes is
+a nightmare. Using a Nix flake makes this trivially reproducible.</li><li>Users of <code>nix</code> or <code>NixOS</code> can consume your project through the Flake,
+effortlessly adding the Flake as an input to their own Nix flakes, or running
+the project in an ephemeral shell:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run github:cpu/rust-flake
+</span></span></code></pre></div><ul><li>It works for more than just Rust. As one example, ff your project needs Python
+to generate test data you can easily extend the Flake to manage Python runtime
+versions and <code>pip</code> dependencies.</li><li>You can reuse the same reproducible dev. environments for your CI. This
+eliminates the classic blunders that ensue when the native dependency versions
+or toolchain versions installed in CI drift from what you use locally.</li></ul><h2 id=conclusion>Conclusion</h2><p>This Flake isn&rsquo;t too complicated, but it can take some time to combine the
+bits and pieces from different documentation sources to make a unified whole.
+Hopefully this example helps demystify the complete picture.</p><p>You can find the complete example with the accompanying Rust crate in
+<a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>. That repo also shows how to set up GitHub actions CI to use
+the <code>nix</code> environment. No more mismatched dependency and tooling versions
+between dev. and CI!</p></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
+<a class=border></a><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
+<a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
+<a class=border></a></div><div class=footer-info>2023 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>

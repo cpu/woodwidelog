@@ -233,7 +233,7 @@ server and client to &amp;ldquo;Negotiate About Window Size&amp;rdquo; (NAWS). T
 out-of-band from the output presented to the user and is automatically updated
 if the client window is resized. Perfect!&lt;/p>
 &lt;p>&lt;em>Only one catch&amp;hellip;&lt;/em> While other clients like &lt;a href="https://tintin.mudhalla.net/">Tintin++&lt;/a> and &lt;a href="https://mudlet.org/">Mudlet&lt;/a>
-already supported NAWS, Blightmud did not. ☹&lt;/p>
+already supported NAWS, Blightmud did not. &amp;#x2639;&amp;#xfe0f;&lt;/p>
 &lt;p>In some ways this was actually fortunate! It gave me a chance to dig into the
 codebase and &lt;a href="https://github.com/Blightmud/Blightmud/commit/35bd9bebe682a85cb46f5b7ef9af0b18a54772e5">implement it&lt;/a> myself. Because the Telnet negotiation logic was
 already exposed to Lua it didn&amp;rsquo;t even require very much Rust to accomplish. The
@@ -286,9 +286,9 @@ to the last explicitly stated values.&lt;/p>
 where there &lt;em>isn&amp;rsquo;t any&lt;/em> explicitly stated value. The class and TTL are both
 optional, so what do you do when zero records specify a class? In this case,
 like most areas where the RFCs are vague, most folks just Do What BIND
-Does™️. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
+Does&amp;#x2122;&amp;#xfe0f;. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
 &lt;p>I whipped up &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1874">a small PR&lt;/a> to adopt this behaviour and &lt;code>trust-dns&lt;/code> was able to
-parse my zones without any other changes. 🎉 Folks seem in agreement that
+parse my zones without any other changes. &amp;#x1f389; Folks seem in agreement that
 supporting this type of zone file is sensible so we&amp;rsquo;re just waiting on some
 other review details to be sorted out. Along the way I also &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1877">fixed&lt;/a> a small
 &lt;code>cargo audit&lt;/code> CI failure with a trivial dep. bump.&lt;/p>
@@ -384,7 +384,7 @@ stalled at &lt;a href="https://github.com/Mudlet/Mudlet/releases/tag/Mudlet-4.15
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/nix/store/ng8m8g0sddihql99nds5z8amd30qiaig-lua-5.1.5-env/lib/lua/5.1/luasql/sqlite3.so:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> undefined symbol: lua_isinteger
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Database support will not be available.
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some digging I had a strong theory for the root cause. For Reasons™️
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some digging I had a strong theory for the root cause. For Reasons&amp;#x2122;&amp;#xfe0f;
 Mudlet only supports Lua 5.1 and the careful observer will note that the missing
 symbol from the error message, &lt;code>lua_isinteger&lt;/code>, only appears in the &lt;a href="https://www.lua.org/manual/5.3/manual.html#lua_isinteger">Lua 5.3
 API Docs&lt;/a>. The &lt;code>LuaSQL-SQLite3&lt;/code> &lt;a href="https://luarocks.org/modules/tomasguisasola/luasql-sqlite3">LuaRocks page&lt;/a> lists
@@ -392,7 +392,7 @@ compatibility with Lua &amp;gt;= 5.1 but a &lt;a href="https://github.com/lunarm
 on a Lua 5.3+ C API feature! How hasn&amp;rsquo;t this broken anyone else you might ask?
 Simple: the regression hasn&amp;rsquo;t been bundled into a release yet. It&amp;rsquo;s just us
 folks on the bleeding edge that are getting cut and NixPkgs at the time of
-writing has the library &lt;a href="https://github.com/NixOS/nixpkgs/blob/c588a77cd54fbdbe874ddd1e63656d5fd69c6ae6/pkgs/development/lua-modules/generated-packages.nix#L2164-L2185">pinned at a rev&lt;/a> that includes the regression. 🔪&lt;/p>
+writing has the library &lt;a href="https://github.com/NixOS/nixpkgs/blob/c588a77cd54fbdbe874ddd1e63656d5fd69c6ae6/pkgs/development/lua-modules/generated-packages.nix#L2164-L2185">pinned at a rev&lt;/a> that includes the regression. &amp;#x1f52a;&lt;/p>
 &lt;p>An &lt;a href="https://github.com/lunarmodules/luasql/issues/147">upstream issue&lt;/a> was dutifully filed but I wanted to unbreak Mudlet
 today. First I considered overriding the LuaRocks rev for the problematic lib
 back to before the regression. There&amp;rsquo;s even a &lt;a href="https://github.com/NixOS/nixpkgs/blob/fbec74286dd682720703fc455ec650c0a8552dbf/pkgs/development/lua-modules/overrides.nix#L352-L356">handy
@@ -429,7 +429,7 @@ environment with the dependencies Mudlet requires:&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It worked perfectly. 🎉 No more undefined symbol trouble and Mudlet 4.16.0 is
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It worked perfectly. &amp;#x1f389; No more undefined symbol trouble and Mudlet 4.16.0 is
 &lt;a href="https://search.nixos.org/packages?channel=unstable&amp;amp;show=mudlet&amp;amp;from=0&amp;amp;size=50&amp;amp;sort=relevance&amp;amp;type=packages&amp;amp;query=mudlet">now available&lt;/a> in the NixPkgs unstable channel.&lt;/p>
 &lt;p>&lt;strong>Bonus&lt;/strong>: I also fixed the optional integration to let Mudlet set your activity
 status in Discord based on the MUD you&amp;rsquo;re playing. Getting that working was just
@@ -439,7 +439,7 @@ a matter of wiring a dependency on &lt;code>discord-rpc&lt;/code> through to the
 &lt;p>&lt;img src="./candlepin.png" alt="Candlepin Bowling">&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling">Candlepin Bowling&lt;/a> - how can you not love a weird bowling variant &lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling#/media/File:20190514_Candlepin_states_and_provinces.png">nearly
-exclusive&lt;/a> to the Maritimes. 🎳&lt;/li>
+exclusive&lt;/a> to the Maritimes. &amp;#x1f3b3;&lt;/li>
 &lt;li>&lt;a href="https://wjwh.eu/posts/2021-10-01-no-syscall-server-iouring.html">Stupid tricks with ioring&lt;/a>: come for the clickbait title, stay for the
 interesting (ab)use of ioring.&lt;/li>
 &lt;li>&lt;a href="https://fulcicult.bandcamp.com/album/exhumed-information">FULCI&lt;/a>: &lt;em>&amp;ldquo;The death metal band named after the Godfather of gore&amp;rdquo;&lt;/em>, exactly as
@@ -448,8 +448,8 @@ described on the tin, 8/10.&lt;/li>
 &lt;h1 id="until-next-time">Until next time&lt;/h1>
 &lt;p>&lt;img src="./sunset.jpg" alt="Sunset view">&lt;/p></description></item><item><title>Slow Moving</title><link>https://log.woodweb.ca/2022/10/slow-moving/</link><pubDate>Sat, 15 Oct 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/slow-moving/</guid><description>&lt;p>Its been hard to marshal energy to get up to much. The combination of changing
 weather, a birthday, and Thanksgiving in short succession makes me a bit of
-a slug. Rather than get too hung up on it I&amp;rsquo;ve been embracing 🎃
-&lt;em>Spooky October vibes&lt;/em> 🎃 and watching a lot of horror movies
+a slug. Rather than get too hung up on it I&amp;rsquo;ve been embracing &amp;#x1f383;
+&lt;em>Spooky October vibes&lt;/em> &amp;#x1f383; and watching a lot of horror movies
 (&lt;em>some good, most bad&lt;/em>).&lt;/p>
 &lt;p>&lt;img src="./monarch.jpg" alt="Monarch">&lt;/p>
 &lt;h1 id="lately">Lately&lt;/h1>
@@ -478,7 +478,7 @@ impairments&lt;/em>). Getting this working requires customizing &lt;a href="http
 and the &lt;code>LIBCLANG_PATH&lt;/code> so that the Cargo build of the &lt;code>speech-dispatcher-sys&lt;/code>
 crate can find the &lt;code>speechd&lt;/code> libraries it requires. At the time I wrote the
 first derivation I found &lt;a href="https://twitter.com/a_hoverbear">Hoverbear&lt;/a>&amp;rsquo;s &lt;a href="https://hoverbear.org/blog/rust-bindgen-in-nix/">blog post on the
-subject&lt;/a> and it made this 100x easier to figure out. 🦸&lt;/p>
+subject&lt;/a> and it made this 100x easier to figure out. &amp;#x1f9b8;&lt;/p>
 &lt;p>The derivation has remained mostly unchanged until last week when I discovered
 a nice way to clean up all that extra configuration. It turns out the extra
 &lt;code>preBuild&lt;/code> and path fiddling to get &lt;code>bindgen&lt;/code> configured can be replaced by
@@ -497,13 +497,13 @@ least intimidating killer robot designs you could imagine. It&amp;rsquo;s a flop
 a movie, but I really dig the late 80s mall setting.&lt;/li>
 &lt;li>&lt;a href="https://gynvael.coldwind.pl/?lang=en&amp;amp;id=754">Hello World under the microscope&lt;/a>. This work makes other &amp;ldquo;deep
 dives&amp;rdquo; look awfully shallow in comparison. Layer after layer of abstractions
-peeled away. 🔬&lt;/li>
+peeled away. &amp;#x1f52c;&lt;/li>
 &lt;li>&lt;a href="https://lwn.net/SubscriberLink/910435/8edb2c6f835f960a/">Fingerprinting systems with TCP source-port selection&lt;/a>.
 A really clever bit of research. It&amp;rsquo;s interesting to see a defensive mechanism
 (&lt;em>&lt;a href="https://www.rfc-editor.org/rfc/rfc6056">RFC 6056&lt;/a> source port randomization&lt;/em>) enabling other new attacks.&lt;/li>
 &lt;/ul>
 &lt;h1 id="until-next-time">Until next time&lt;/h1>
-&lt;p>🤖💬 &lt;em>THANK YOU, HAVE A NICE DAY&lt;/em>&lt;/p>
+&lt;p>&amp;#x1f916;&amp;#x1f4ac; &lt;em>THANK YOU, HAVE A NICE DAY&lt;/em>&lt;/p>
 &lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
 &lt;iframe src="https://www.youtube.com/embed/7PsITAWy5C0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
 &lt;/div></description></item><item><title>WWL</title><link>https://log.woodweb.ca/2022/10/wwl/</link><pubDate>Tue, 04 Oct 2022 12:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/wwl/</guid><description>&lt;h1 id="starting">Starting&lt;/h1>
@@ -525,8 +525,8 @@ development and has gained some really cool features recently (including
 &lt;a href="https://github.com/ldmud/ldmud/blob/master/doc/concepts/python">Python support&lt;/a> to bridge LPC/Python).&lt;/p>
 &lt;p>If MUDs, and LPMuds in particular, weren&amp;rsquo;t niche enough why not add another
 dimension: NixOS. Recently I &lt;a href="https://github.com/NixOS/nixpkgs/pull/190682">packaged LDMud 3.6.6 for Nixpkgs&lt;/a>. I&amp;rsquo;ve
-been using this derivation locally for some time for a ✨ &lt;em>secret
-project&lt;/em> ✨ and I&amp;rsquo;m happy it was able to be merged upstream. The &lt;a href="https://github.com/ldmud/ldmud/blob/64b3588a13fb0c761da62d6deb56dfa380b03c6f/COPYRIGHT#L10-L14">LDMud
+been using this derivation locally for some time for a &amp;#x2728; &lt;em>secret
+project&lt;/em> &amp;#x2728; and I&amp;rsquo;m happy it was able to be merged upstream. The &lt;a href="https://github.com/ldmud/ldmud/blob/64b3588a13fb0c761da62d6deb56dfa380b03c6f/COPYRIGHT#L10-L14">LDMud
 copyright&lt;/a> is unique in its non-commercial requirement and so had to be added as
 a &amp;ldquo;non-free&amp;rdquo; distributable package.&lt;/p>
 &lt;h2 id="vexation">VeXation&lt;/h2>
@@ -551,7 +551,7 @@ theme I&amp;rsquo;m using in my local env. Big thanks to &lt;a href="https://aya
 with hugo and nix flakes&amp;rdquo; post (&lt;em>edit: appears gone now!&lt;/em>) for offering a great
 starting point to adapt.&lt;/p>
 &lt;p>Here&amp;rsquo;s hoping all these shaved yaks make it easier to write the next post.
-🤡&lt;/p>
+:clown:&lt;/p>
 &lt;h1 id="thinking-about">Thinking about&lt;/h1>
 &lt;ul>
 &lt;li>The &lt;a href="https://robertheaton.com/2018/12/17/wavefunction-collapse-algorithm/">Wavefunction Collapse Algorithm&lt;/a>. A stupid name for an interesting
@@ -559,7 +559,7 @@ technique for procedurally generating &amp;ldquo;things&amp;rdquo; (&lt;em>textu
 with the same overall vibe as a set of inputs.&lt;/li>
 &lt;li>The &lt;a href="https://dolphin-emu.org/blog/">Dolphin Progress Reports&lt;/a>. Incredible wizardry. Really great technical
 writing covering said wizardry. I wish every long running free software
-project published reports like these. 😍&lt;/li>
+project published reports like these. &amp;#x1f60d;&lt;/li>
 &lt;li>The &lt;a href="https://en.wikipedia.org/wiki/The_Outer_Limits_(1995_TV_series)">Outer Limits (1995)&lt;/a>. &lt;em>There is nothing wrong with your
 television set. Do not attempt to adjust the picture.&lt;/em> What if X-Files cross
 Twilight Zone with less money and coherence. Another 1990&amp;rsquo;s production largely

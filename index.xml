@@ -1,4 +1,193 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sun, 07 May 2023 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>New and Old</title><link>https://log.woodweb.ca/2023/05/new-and-old/</link><pubDate>Sun, 07 May 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/05/new-and-old/</guid><description>&lt;p>Spring has sprung and it&amp;rsquo;s a potent reminder of how much I value contrast.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sun, 26 Nov 2023 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>A Beyond-the-basics Rust Flake</title><link>https://log.woodweb.ca/articles/rust-flake/</link><pubDate>Sun, 26 Nov 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/rust-flake/</guid><description>&lt;h1 id="about">About&lt;/h1>
+&lt;p>There are many resources for writing &lt;a href="https://zero-to-nix.com/concepts/flakes">Nix flakes&lt;/a> for Rust projects but they can
+often be too simple. They may focus on projects without complex native
+code dependencies, or only offer a single development environment with a fixed
+Rust toolchain version.&lt;/p>
+&lt;p>While working on Flakes for my own Rust projects I&amp;rsquo;ve found moving beyond the
+basics took experimentation and combining parts from many different resources.
+This article is my attempt to document a complete example that&amp;rsquo;s worked for
+me. It offers:&lt;/p>
+&lt;ul>
+&lt;li>Support for native code dependencies.
+&lt;ul>
+&lt;li>In particular, &amp;ldquo;-sys&amp;rdquo; crate dependencies that use &lt;a href="https://github.com/mozilla/cbindgen">cbindgen&lt;/a> for
+generating &lt;a href="https://doc.rust-lang.org/nomicon/ffi.html">FFI&lt;/a> bindings.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>A development environment for three Rust versions:
+&lt;ul>
+&lt;li>A Minimum Supported Rust Version (MSRV).&lt;/li>
+&lt;li>Latest Stable.&lt;/li>
+&lt;li>A selected Nightly.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Multiple output packages, with different Cargo features selected.&lt;/li>
+&lt;/ul>
+&lt;h1 id="the-flake">The Flake&lt;/h1>
+&lt;p>Without further ado, here&amp;rsquo;s the final Flake. It packages a simple Rust binary
+project from a Cargo project located in the same directory. The Cargo project
+produces a single command-line binary, &lt;code>example&lt;/code>, that demonstrates
+text-to-speech on Linux. It has an optional &lt;code>foobar&lt;/code> feature that when enabled
+will change the spoken message. You can find the complete example in
+&lt;a href="https://github.com/cpu/rust-flake">cpu/rust-flake&lt;/a>.&lt;/p>
+&lt;p>The Rust code depends on the &lt;a href="https://crates.io/crates/tts">tts-rs&lt;/a> crate for its text-to-speech magic, which
+in turn uses the &lt;a href="https://crates.io/crates/speech-dispatcher">speech-dispatcher&lt;/a> and &lt;a href="https://crates.io/crates/speech-dispatcher-sys">speech-dispatcher-sys&lt;/a> crates. On
+Linux, the &lt;code>-sys&lt;/code> crate uses &lt;a href="https://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config&lt;/a> and &lt;a href="https://github.com/mozilla/cbindgen">cbindgen&lt;/a> to generate FFI headers
+for the native &lt;a href="https://wiki.archlinux.org/title/Speech_dispatcher">speechd&lt;/a> dependency. Getting this working reliable without Nix
+would require manually installing extra system packages (using &lt;code>apt-get&lt;/code>, &lt;code>yum&lt;/code>,
+&lt;code>brew&lt;/code>, etc) and be difficult to reproduce consistently across systems.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-nix" data-lang="nix">&lt;span style="display:flex;">&lt;span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> inputs &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nixpkgs&lt;span style="color:#f92672">.&lt;/span>url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;github:nixos/nixpkgs/nixos-unstable&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> flake-parts&lt;span style="color:#f92672">.&lt;/span>url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;github:hercules-ci/flake-parts&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rust-overlay&lt;span style="color:#f92672">.&lt;/span>url &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;github:oxalica/rust-overlay&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> outputs &lt;span style="color:#f92672">=&lt;/span> inputs:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> inputs&lt;span style="color:#f92672">.&lt;/span>flake-parts&lt;span style="color:#f92672">.&lt;/span>lib&lt;span style="color:#f92672">.&lt;/span>mkFlake { &lt;span style="color:#66d9ef">inherit&lt;/span> inputs; } {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> systems &lt;span style="color:#f92672">=&lt;/span> [ &lt;span style="color:#e6db74">&amp;#34;x86_64-linux&amp;#34;&lt;/span> ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> perSystem &lt;span style="color:#f92672">=&lt;/span> { config&lt;span style="color:#f92672">,&lt;/span> self&amp;#39;&lt;span style="color:#f92672">,&lt;/span> pkgs&lt;span style="color:#f92672">,&lt;/span> lib&lt;span style="color:#f92672">,&lt;/span> system&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">...&lt;/span> }:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> runtimeDeps &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">with&lt;/span> pkgs; [ alsa-lib speechd ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buildDeps &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">with&lt;/span> pkgs; [ pkg-config rustPlatform&lt;span style="color:#f92672">.&lt;/span>bindgenHook ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> devDeps &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">with&lt;/span> pkgs; [ gdb ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cargoToml &lt;span style="color:#f92672">=&lt;/span> builtins&lt;span style="color:#f92672">.&lt;/span>fromTOML (builtins&lt;span style="color:#f92672">.&lt;/span>readFile &lt;span style="color:#e6db74">./Cargo.toml&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> msrv &lt;span style="color:#f92672">=&lt;/span> cargoToml&lt;span style="color:#f92672">.&lt;/span>package&lt;span style="color:#f92672">.&lt;/span>rust-version;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rustPackage &lt;span style="color:#f92672">=&lt;/span> features:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (pkgs&lt;span style="color:#f92672">.&lt;/span>makeRustPlatform {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cargo &lt;span style="color:#f92672">=&lt;/span> pkgs&lt;span style="color:#f92672">.&lt;/span>rust-bin&lt;span style="color:#f92672">.&lt;/span>stable&lt;span style="color:#f92672">.&lt;/span>latest&lt;span style="color:#f92672">.&lt;/span>minimal;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> rustc &lt;span style="color:#f92672">=&lt;/span> pkgs&lt;span style="color:#f92672">.&lt;/span>rust-bin&lt;span style="color:#f92672">.&lt;/span>stable&lt;span style="color:#f92672">.&lt;/span>latest&lt;span style="color:#f92672">.&lt;/span>minimal;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })&lt;span style="color:#f92672">.&lt;/span>buildRustPackage {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">inherit&lt;/span> (cargoToml&lt;span style="color:#f92672">.&lt;/span>package) name version;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> src &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">./.&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> cargoLock&lt;span style="color:#f92672">.&lt;/span>lockFile &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">./Cargo.lock&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buildFeatures &lt;span style="color:#f92672">=&lt;/span> features;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buildInputs &lt;span style="color:#f92672">=&lt;/span> runtimeDeps;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nativeBuildInputs &lt;span style="color:#f92672">=&lt;/span> buildDeps;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Uncomment if your cargo tests require networking or otherwise&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># don&amp;#39;t play nicely with the Nix build sandbox:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># doCheck = false;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mkDevShell &lt;span style="color:#f92672">=&lt;/span> rustc:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pkgs&lt;span style="color:#f92672">.&lt;/span>mkShell {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> shellHook &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;&amp;#39;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> export RUST_SRC_PATH=&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>pkgs&lt;span style="color:#f92672">.&lt;/span>rustPlatform&lt;span style="color:#f92672">.&lt;/span>rustLibSrc&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> &amp;#39;&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> buildInputs &lt;span style="color:#f92672">=&lt;/span> runtimeDeps;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> nativeBuildInputs &lt;span style="color:#f92672">=&lt;/span> buildDeps &lt;span style="color:#f92672">++&lt;/span> devDeps &lt;span style="color:#f92672">++&lt;/span> [ rustc ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">in&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> _module&lt;span style="color:#f92672">.&lt;/span>args&lt;span style="color:#f92672">.&lt;/span>pkgs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#f92672">import&lt;/span> inputs&lt;span style="color:#f92672">.&lt;/span>nixpkgs {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">inherit&lt;/span> system;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> overlays &lt;span style="color:#f92672">=&lt;/span> [ (&lt;span style="color:#f92672">import&lt;/span> inputs&lt;span style="color:#f92672">.&lt;/span>rust-overlay) ];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> packages&lt;span style="color:#f92672">.&lt;/span>default &lt;span style="color:#f92672">=&lt;/span> self&amp;#39;&lt;span style="color:#f92672">.&lt;/span>packages&lt;span style="color:#f92672">.&lt;/span>example;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> devShells&lt;span style="color:#f92672">.&lt;/span>default &lt;span style="color:#f92672">=&lt;/span> self&amp;#39;&lt;span style="color:#f92672">.&lt;/span>devShells&lt;span style="color:#f92672">.&lt;/span>nightly;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> packages&lt;span style="color:#f92672">.&lt;/span>example &lt;span style="color:#f92672">=&lt;/span> (rustPackage &lt;span style="color:#e6db74">&amp;#34;foobar&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> packages&lt;span style="color:#f92672">.&lt;/span>example-base &lt;span style="color:#f92672">=&lt;/span> (rustPackage &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> devShells&lt;span style="color:#f92672">.&lt;/span>nightly &lt;span style="color:#f92672">=&lt;/span> (mkDevShell (pkgs&lt;span style="color:#f92672">.&lt;/span>rust-bin&lt;span style="color:#f92672">.&lt;/span>selectLatestNightlyWith
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> (toolchain: toolchain&lt;span style="color:#f92672">.&lt;/span>default)));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> devShells&lt;span style="color:#f92672">.&lt;/span>stable &lt;span style="color:#f92672">=&lt;/span> (mkDevShell pkgs&lt;span style="color:#f92672">.&lt;/span>rust-bin&lt;span style="color:#f92672">.&lt;/span>stable&lt;span style="color:#f92672">.&lt;/span>latest&lt;span style="color:#f92672">.&lt;/span>default);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> devShells&lt;span style="color:#f92672">.&lt;/span>msrv &lt;span style="color:#f92672">=&lt;/span> (mkDevShell pkgs&lt;span style="color:#f92672">.&lt;/span>rust-bin&lt;span style="color:#f92672">.&lt;/span>stable&lt;span style="color:#f92672">.&lt;/span>&lt;span style="color:#e6db74">${&lt;/span>msrv&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#f92672">.&lt;/span>default);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h1 id="usage">Usage&lt;/h1>
+&lt;h2 id="default-package">Default Package&lt;/h2>
+&lt;p>After cloning the repo, you can run the default Flake output package directly:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>nix run
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Or, to run the output package that doesn&amp;rsquo;t enable the &amp;ldquo;foobar&amp;rdquo; feature:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>nix run &lt;span style="color:#e6db74">&amp;#39;.#example-base&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="dev-environments">Dev. Environments&lt;/h2>
+&lt;p>You can quickly enter a development environment for one of the three Rust
+versions:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Rust nightly (default):&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Rust stable:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop &lt;span style="color:#e6db74">&amp;#39;.#stable&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># MSRV:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop &lt;span style="color:#e6db74">&amp;#39;.#msrv&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="cargo">Cargo&lt;/h3>
+&lt;p>In each development environment you&amp;rsquo;ll have the usual &lt;code>cargo&lt;/code> tooling and any
+extra &lt;code>devDeps&lt;/code> specified:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>rustc --version &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> gdb --version &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> speech-dispatcher --version
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cargo fmt &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> cargo clippy &lt;span style="color:#f92672">&amp;amp;&amp;amp;&lt;/span> cargo test
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cargo run
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>cargo run --all-features --release
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="quickly-running-a-command">Quickly running a command&lt;/h3>
+&lt;p>Rather than enter a development shell you can also run a command in the
+development environment directly:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Nightly:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop &lt;span style="color:#e6db74">&amp;#39;.#nightly&amp;#39;&lt;/span> --command cargo test
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Stable:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop &lt;span style="color:#e6db74">&amp;#39;.#stable&amp;#39;&lt;/span> --command cargo test
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># MSRV:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>nix develop &lt;span style="color:#e6db74">&amp;#39;.#msrv&amp;#39;&lt;/span> --command cargo test
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="details">Details&lt;/h2>
+&lt;p>Some points of interest:&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>cargo.toml&lt;/code> - The Cargo metadata is read into a Nix binding, &lt;code>cargoToml&lt;/code>,
+and used to avoid duplicating the project name, Cargo version, or MSRV in
+both the &lt;code>Cargo.toml&lt;/code> and the Nix Flake.&lt;/li>
+&lt;li>&lt;code>runtimeDeps&lt;/code>, &lt;code>buildDeps&lt;/code> and &lt;code>devDeps&lt;/code> - I often have to remind myself the
+difference between &lt;code>buildInputs&lt;/code> and &lt;code>nativeBuildInputs&lt;/code> so I make these
+helpful bindings:
+&lt;ol>
+&lt;li>&lt;code>runtimeDeps&lt;/code> corresponds to &lt;code>buildInputs&lt;/code> - things needed at runtime.&lt;/li>
+&lt;li>&lt;code>buildDeps&lt;/code> corresponds to &lt;code>nativeBuildInputs&lt;/code> - things needed only when
+building.&lt;/li>
+&lt;li>&lt;code>devDeps&lt;/code> is for extra dev. packages - things needed only in &lt;code>nix develop&lt;/code>
+shells.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>&lt;code>cbindgen&lt;/code> - Getting this working requires &lt;code>cbindgen&lt;/code> be able to find
+&lt;code>libclang&lt;/code>, and &lt;code>libclang&lt;/code> being able to find your native dependencies.
+There&amp;rsquo;s a handy &lt;code>bindgenHook&lt;/code> that we use for this purpose, letting it do all
+the heavy lifting. No need to muck with &lt;code>LIBCLANG_PATH&lt;/code>.&lt;/li>
+&lt;li>&lt;code>withFeatures&lt;/code> - this is a small helper function that reduces duplication
+building a Nix Flake output from a Rust project. It makes it easy to define
+multiple Flake package outputs that differ only in Cargo feature selections.&lt;/li>
+&lt;li>&lt;code>mkDevShell&lt;/code> - this is a small helper function that reduces duplication
+creating a development shell with a specific Rust version. It also sets the
+&lt;code>RUST_SRC_PATH&lt;/code> that many IDEs will use to find the Rust stdlib.&lt;/li>
+&lt;/ol>
+&lt;h2 id="why-bother">Why bother?&lt;/h2>
+&lt;p>This might seem like a lot of work. Why not just use &lt;code>rustup&lt;/code> to manage three
+Rust versions and call it a day? For me there are a few primary advantages (&lt;em>and
+lots of smaller ones!&lt;/em>):&lt;/p>
+&lt;ul>
+&lt;li>Rustup can&amp;rsquo;t manage system level dependencies. Typically you&amp;rsquo;ll have to
+describe which packages a user needs to install before building, or write
+adhoc scripts to install the required dependencies. Keeping the versions used
+by different developers in-sync with one another across different OSes is
+a nightmare. Using a Nix flake makes this trivially reproducible.&lt;/li>
+&lt;li>Users of &lt;code>nix&lt;/code> or &lt;code>NixOS&lt;/code> can consume your project through the Flake,
+effortlessly adding the Flake as an input to their own Nix flakes, or running
+the project in an ephemeral shell:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>nix run github:cpu/rust-flake
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>It works for more than just Rust. As one example, ff your project needs Python
+to generate test data you can easily extend the Flake to manage Python runtime
+versions and &lt;code>pip&lt;/code> dependencies.&lt;/li>
+&lt;li>You can reuse the same reproducible dev. environments for your CI. This
+eliminates the classic blunders that ensue when the native dependency versions
+or toolchain versions installed in CI drift from what you use locally.&lt;/li>
+&lt;/ul>
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>This Flake isn&amp;rsquo;t too complicated, but it can take some time to combine the
+bits and pieces from different documentation sources to make a unified whole.
+Hopefully this example helps demystify the complete picture.&lt;/p>
+&lt;p>You can find the complete example with the accompanying Rust crate in
+&lt;a href="https://github.com/cpu/rust-flake">cpu/rust-flake&lt;/a>. That repo also shows how to set up GitHub actions CI to use
+the &lt;code>nix&lt;/code> environment. No more mismatched dependency and tooling versions
+between dev. and CI!&lt;/p></description></item><item><title>New and Old</title><link>https://log.woodweb.ca/2023/05/new-and-old/</link><pubDate>Sun, 07 May 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2023/05/new-and-old/</guid><description>&lt;p>Spring has sprung and it&amp;rsquo;s a potent reminder of how much I value contrast.
 Moaning about the winter is a well established Canadian past-time but I&amp;rsquo;ve
 realized I need four distinct seasons to feel right. For me it&amp;rsquo;s easier to
 appreciate the small details that the change in seasons provides when the
@@ -233,7 +422,7 @@ server and client to &amp;ldquo;Negotiate About Window Size&amp;rdquo; (NAWS). T
 out-of-band from the output presented to the user and is automatically updated
 if the client window is resized. Perfect!&lt;/p>
 &lt;p>&lt;em>Only one catch&amp;hellip;&lt;/em> While other clients like &lt;a href="https://tintin.mudhalla.net/">Tintin++&lt;/a> and &lt;a href="https://mudlet.org/">Mudlet&lt;/a>
-already supported NAWS, Blightmud did not. ☹&lt;/p>
+already supported NAWS, Blightmud did not. &amp;#x2639;&amp;#xfe0f;&lt;/p>
 &lt;p>In some ways this was actually fortunate! It gave me a chance to dig into the
 codebase and &lt;a href="https://github.com/Blightmud/Blightmud/commit/35bd9bebe682a85cb46f5b7ef9af0b18a54772e5">implement it&lt;/a> myself. Because the Telnet negotiation logic was
 already exposed to Lua it didn&amp;rsquo;t even require very much Rust to accomplish. The
@@ -286,9 +475,9 @@ to the last explicitly stated values.&lt;/p>
 where there &lt;em>isn&amp;rsquo;t any&lt;/em> explicitly stated value. The class and TTL are both
 optional, so what do you do when zero records specify a class? In this case,
 like most areas where the RFCs are vague, most folks just Do What BIND
-Does™️. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
+Does&amp;#x2122;&amp;#xfe0f;. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
 &lt;p>I whipped up &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1874">a small PR&lt;/a> to adopt this behaviour and &lt;code>trust-dns&lt;/code> was able to
-parse my zones without any other changes. 🎉 Folks seem in agreement that
+parse my zones without any other changes. &amp;#x1f389; Folks seem in agreement that
 supporting this type of zone file is sensible so we&amp;rsquo;re just waiting on some
 other review details to be sorted out. Along the way I also &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1877">fixed&lt;/a> a small
 &lt;code>cargo audit&lt;/code> CI failure with a trivial dep. bump.&lt;/p>
@@ -384,7 +573,7 @@ stalled at &lt;a href="https://github.com/Mudlet/Mudlet/releases/tag/Mudlet-4.15
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>/nix/store/ng8m8g0sddihql99nds5z8amd30qiaig-lua-5.1.5-env/lib/lua/5.1/luasql/sqlite3.so:
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> undefined symbol: lua_isinteger
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Database support will not be available.
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some digging I had a strong theory for the root cause. For Reasons™️
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>After some digging I had a strong theory for the root cause. For Reasons&amp;#x2122;&amp;#xfe0f;
 Mudlet only supports Lua 5.1 and the careful observer will note that the missing
 symbol from the error message, &lt;code>lua_isinteger&lt;/code>, only appears in the &lt;a href="https://www.lua.org/manual/5.3/manual.html#lua_isinteger">Lua 5.3
 API Docs&lt;/a>. The &lt;code>LuaSQL-SQLite3&lt;/code> &lt;a href="https://luarocks.org/modules/tomasguisasola/luasql-sqlite3">LuaRocks page&lt;/a> lists
@@ -392,7 +581,7 @@ compatibility with Lua &amp;gt;= 5.1 but a &lt;a href="https://github.com/lunarm
 on a Lua 5.3+ C API feature! How hasn&amp;rsquo;t this broken anyone else you might ask?
 Simple: the regression hasn&amp;rsquo;t been bundled into a release yet. It&amp;rsquo;s just us
 folks on the bleeding edge that are getting cut and NixPkgs at the time of
-writing has the library &lt;a href="https://github.com/NixOS/nixpkgs/blob/c588a77cd54fbdbe874ddd1e63656d5fd69c6ae6/pkgs/development/lua-modules/generated-packages.nix#L2164-L2185">pinned at a rev&lt;/a> that includes the regression. 🔪&lt;/p>
+writing has the library &lt;a href="https://github.com/NixOS/nixpkgs/blob/c588a77cd54fbdbe874ddd1e63656d5fd69c6ae6/pkgs/development/lua-modules/generated-packages.nix#L2164-L2185">pinned at a rev&lt;/a> that includes the regression. &amp;#x1f52a;&lt;/p>
 &lt;p>An &lt;a href="https://github.com/lunarmodules/luasql/issues/147">upstream issue&lt;/a> was dutifully filed but I wanted to unbreak Mudlet
 today. First I considered overriding the LuaRocks rev for the problematic lib
 back to before the regression. There&amp;rsquo;s even a &lt;a href="https://github.com/NixOS/nixpkgs/blob/fbec74286dd682720703fc455ec650c0a8552dbf/pkgs/development/lua-modules/overrides.nix#L352-L356">handy
@@ -429,7 +618,7 @@ environment with the dependencies Mudlet requires:&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ]);
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">...&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It worked perfectly. 🎉 No more undefined symbol trouble and Mudlet 4.16.0 is
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It worked perfectly. &amp;#x1f389; No more undefined symbol trouble and Mudlet 4.16.0 is
 &lt;a href="https://search.nixos.org/packages?channel=unstable&amp;amp;show=mudlet&amp;amp;from=0&amp;amp;size=50&amp;amp;sort=relevance&amp;amp;type=packages&amp;amp;query=mudlet">now available&lt;/a> in the NixPkgs unstable channel.&lt;/p>
 &lt;p>&lt;strong>Bonus&lt;/strong>: I also fixed the optional integration to let Mudlet set your activity
 status in Discord based on the MUD you&amp;rsquo;re playing. Getting that working was just
@@ -439,7 +628,7 @@ a matter of wiring a dependency on &lt;code>discord-rpc&lt;/code> through to the
 &lt;p>&lt;img src="./candlepin.png" alt="Candlepin Bowling">&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling">Candlepin Bowling&lt;/a> - how can you not love a weird bowling variant &lt;a href="https://en.wikipedia.org/wiki/Candlepin_bowling#/media/File:20190514_Candlepin_states_and_provinces.png">nearly
-exclusive&lt;/a> to the Maritimes. 🎳&lt;/li>
+exclusive&lt;/a> to the Maritimes. &amp;#x1f3b3;&lt;/li>
 &lt;li>&lt;a href="https://wjwh.eu/posts/2021-10-01-no-syscall-server-iouring.html">Stupid tricks with ioring&lt;/a>: come for the clickbait title, stay for the
 interesting (ab)use of ioring.&lt;/li>
 &lt;li>&lt;a href="https://fulcicult.bandcamp.com/album/exhumed-information">FULCI&lt;/a>: &lt;em>&amp;ldquo;The death metal band named after the Godfather of gore&amp;rdquo;&lt;/em>, exactly as
@@ -448,8 +637,8 @@ described on the tin, 8/10.&lt;/li>
 &lt;h1 id="until-next-time">Until next time&lt;/h1>
 &lt;p>&lt;img src="./sunset.jpg" alt="Sunset view">&lt;/p></description></item><item><title>Slow Moving</title><link>https://log.woodweb.ca/2022/10/slow-moving/</link><pubDate>Sat, 15 Oct 2022 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/slow-moving/</guid><description>&lt;p>Its been hard to marshal energy to get up to much. The combination of changing
 weather, a birthday, and Thanksgiving in short succession makes me a bit of
-a slug. Rather than get too hung up on it I&amp;rsquo;ve been embracing 🎃
-&lt;em>Spooky October vibes&lt;/em> 🎃 and watching a lot of horror movies
+a slug. Rather than get too hung up on it I&amp;rsquo;ve been embracing &amp;#x1f383;
+&lt;em>Spooky October vibes&lt;/em> &amp;#x1f383; and watching a lot of horror movies
 (&lt;em>some good, most bad&lt;/em>).&lt;/p>
 &lt;p>&lt;img src="./monarch.jpg" alt="Monarch">&lt;/p>
 &lt;h1 id="lately">Lately&lt;/h1>
@@ -478,7 +667,7 @@ impairments&lt;/em>). Getting this working requires customizing &lt;a href="http
 and the &lt;code>LIBCLANG_PATH&lt;/code> so that the Cargo build of the &lt;code>speech-dispatcher-sys&lt;/code>
 crate can find the &lt;code>speechd&lt;/code> libraries it requires. At the time I wrote the
 first derivation I found &lt;a href="https://twitter.com/a_hoverbear">Hoverbear&lt;/a>&amp;rsquo;s &lt;a href="https://hoverbear.org/blog/rust-bindgen-in-nix/">blog post on the
-subject&lt;/a> and it made this 100x easier to figure out. 🦸&lt;/p>
+subject&lt;/a> and it made this 100x easier to figure out. &amp;#x1f9b8;&lt;/p>
 &lt;p>The derivation has remained mostly unchanged until last week when I discovered
 a nice way to clean up all that extra configuration. It turns out the extra
 &lt;code>preBuild&lt;/code> and path fiddling to get &lt;code>bindgen&lt;/code> configured can be replaced by
@@ -497,13 +686,13 @@ least intimidating killer robot designs you could imagine. It&amp;rsquo;s a flop
 a movie, but I really dig the late 80s mall setting.&lt;/li>
 &lt;li>&lt;a href="https://gynvael.coldwind.pl/?lang=en&amp;amp;id=754">Hello World under the microscope&lt;/a>. This work makes other &amp;ldquo;deep
 dives&amp;rdquo; look awfully shallow in comparison. Layer after layer of abstractions
-peeled away. 🔬&lt;/li>
+peeled away. &amp;#x1f52c;&lt;/li>
 &lt;li>&lt;a href="https://lwn.net/SubscriberLink/910435/8edb2c6f835f960a/">Fingerprinting systems with TCP source-port selection&lt;/a>.
 A really clever bit of research. It&amp;rsquo;s interesting to see a defensive mechanism
 (&lt;em>&lt;a href="https://www.rfc-editor.org/rfc/rfc6056">RFC 6056&lt;/a> source port randomization&lt;/em>) enabling other new attacks.&lt;/li>
 &lt;/ul>
 &lt;h1 id="until-next-time">Until next time&lt;/h1>
-&lt;p>🤖💬 &lt;em>THANK YOU, HAVE A NICE DAY&lt;/em>&lt;/p>
+&lt;p>&amp;#x1f916;&amp;#x1f4ac; &lt;em>THANK YOU, HAVE A NICE DAY&lt;/em>&lt;/p>
 &lt;div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
 &lt;iframe src="https://www.youtube.com/embed/7PsITAWy5C0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video">&lt;/iframe>
 &lt;/div></description></item><item><title>WWL</title><link>https://log.woodweb.ca/2022/10/wwl/</link><pubDate>Tue, 04 Oct 2022 12:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2022/10/wwl/</guid><description>&lt;h1 id="starting">Starting&lt;/h1>
@@ -525,8 +714,8 @@ development and has gained some really cool features recently (including
 &lt;a href="https://github.com/ldmud/ldmud/blob/master/doc/concepts/python">Python support&lt;/a> to bridge LPC/Python).&lt;/p>
 &lt;p>If MUDs, and LPMuds in particular, weren&amp;rsquo;t niche enough why not add another
 dimension: NixOS. Recently I &lt;a href="https://github.com/NixOS/nixpkgs/pull/190682">packaged LDMud 3.6.6 for Nixpkgs&lt;/a>. I&amp;rsquo;ve
-been using this derivation locally for some time for a ✨ &lt;em>secret
-project&lt;/em> ✨ and I&amp;rsquo;m happy it was able to be merged upstream. The &lt;a href="https://github.com/ldmud/ldmud/blob/64b3588a13fb0c761da62d6deb56dfa380b03c6f/COPYRIGHT#L10-L14">LDMud
+been using this derivation locally for some time for a &amp;#x2728; &lt;em>secret
+project&lt;/em> &amp;#x2728; and I&amp;rsquo;m happy it was able to be merged upstream. The &lt;a href="https://github.com/ldmud/ldmud/blob/64b3588a13fb0c761da62d6deb56dfa380b03c6f/COPYRIGHT#L10-L14">LDMud
 copyright&lt;/a> is unique in its non-commercial requirement and so had to be added as
 a &amp;ldquo;non-free&amp;rdquo; distributable package.&lt;/p>
 &lt;h2 id="vexation">VeXation&lt;/h2>
@@ -551,7 +740,7 @@ theme I&amp;rsquo;m using in my local env. Big thanks to &lt;a href="https://aya
 with hugo and nix flakes&amp;rdquo; post (&lt;em>edit: appears gone now!&lt;/em>) for offering a great
 starting point to adapt.&lt;/p>
 &lt;p>Here&amp;rsquo;s hoping all these shaved yaks make it easier to write the next post.
-🤡&lt;/p>
+:clown:&lt;/p>
 &lt;h1 id="thinking-about">Thinking about&lt;/h1>
 &lt;ul>
 &lt;li>The &lt;a href="https://robertheaton.com/2018/12/17/wavefunction-collapse-algorithm/">Wavefunction Collapse Algorithm&lt;/a>. A stupid name for an interesting
@@ -559,7 +748,7 @@ technique for procedurally generating &amp;ldquo;things&amp;rdquo; (&lt;em>textu
 with the same overall vibe as a set of inputs.&lt;/li>
 &lt;li>The &lt;a href="https://dolphin-emu.org/blog/">Dolphin Progress Reports&lt;/a>. Incredible wizardry. Really great technical
 writing covering said wizardry. I wish every long running free software
-project published reports like these. 😍&lt;/li>
+project published reports like these. &amp;#x1f60d;&lt;/li>
 &lt;li>The &lt;a href="https://en.wikipedia.org/wiki/The_Outer_Limits_(1995_TV_series)">Outer Limits (1995)&lt;/a>. &lt;em>There is nothing wrong with your
 television set. Do not attempt to adjust the picture.&lt;/em> What if X-Files cross
 Twilight Zone with less money and coherence. Another 1990&amp;rsquo;s production largely
