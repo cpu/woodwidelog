@@ -17,7 +17,7 @@ will change the spoken message. You can find the complete example in
 <a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>.</p><p>The Rust code depends on the <a href=https://crates.io/crates/tts>tts-rs</a> crate for its text-to-speech magic, which
 in turn uses the <a href=https://crates.io/crates/speech-dispatcher>speech-dispatcher</a> and <a href=https://crates.io/crates/speech-dispatcher-sys>speech-dispatcher-sys</a> crates. On
 Linux, the <code>-sys</code> crate uses <a href=https://www.freedesktop.org/wiki/Software/pkg-config/>pkg-config</a> and <a href=https://github.com/mozilla/cbindgen>cbindgen</a> to generate FFI headers
-for the native <a href=https://wiki.archlinux.org/title/Speech_dispatcher>speechd</a> dependency. Getting this working reliable without Nix
+for the native <a href=https://wiki.archlinux.org/title/Speech_dispatcher>speechd</a> dependency. Getting this working reliably without Nix
 would require manually installing extra system packages (using <code>apt-get</code>, <code>yum</code>,
 <code>brew</code>, etc) and be difficult to reproduce consistently across systems.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-nix data-lang=nix><span style=display:flex><span>{
 </span></span><span style=display:flex><span>  inputs <span style=color:#f92672>=</span> {
@@ -102,9 +102,9 @@ development environment directly:</p><div class=highlight><pre tabindex=0 style=
 </span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#stable&#39;</span>  --command cargo test
 </span></span><span style=display:flex><span><span style=color:#75715e># MSRV:</span>
 </span></span><span style=display:flex><span>nix develop <span style=color:#e6db74>&#39;.#msrv&#39;</span>    --command cargo test
-</span></span></code></pre></div><h2 id=details>Details</h2><p>Some points of interest:</p><ol><li><code>cargo.toml</code> - The Cargo metadata is read into a Nix binding, <code>cargoToml</code>,
+</span></span></code></pre></div><h2 id=details>Details</h2><p>Some points of interest:</p><ol><li><code>cargoToml</code> - The Cargo metadata is read into a Nix binding, <code>cargoToml</code>,
 and used to avoid duplicating the project name, Cargo version, or MSRV in
-both the <code>Cargo.toml</code> and the Nix Flake.</li><li><code>runtimeDeps</code>, <code>buildDeps</code> and <code>devDeps</code> - I often have to remind myself the
+both the <code>Cargo.toml</code> and the Nix flake.</li><li><code>runtimeDeps</code>, <code>buildDeps</code> and <code>devDeps</code> - I often have to remind myself the
 difference between <code>buildInputs</code> and <code>nativeBuildInputs</code> so I make these
 helpful bindings:<ol><li><code>runtimeDeps</code> corresponds to <code>buildInputs</code> - things needed at runtime.</li><li><code>buildDeps</code> corresponds to <code>nativeBuildInputs</code> - things needed only when
 building.</li><li><code>devDeps</code> is for extra dev. packages - things needed only in <code>nix develop</code>
@@ -112,8 +112,8 @@ shells.</li></ol></li><li><code>cbindgen</code> - Getting this working requires 
 <code>libclang</code>, and <code>libclang</code> being able to find your native dependencies.
 There&rsquo;s a handy <code>bindgenHook</code> that we use for this purpose, letting it do all
 the heavy lifting. No need to muck with <code>LIBCLANG_PATH</code>.</li><li><code>withFeatures</code> - this is a small helper function that reduces duplication
-building a Nix Flake output from a Rust project. It makes it easy to define
-multiple Flake package outputs that differ only in Cargo feature selections.</li><li><code>mkDevShell</code> - this is a small helper function that reduces duplication
+building a Nix flake output from a Rust project. It makes it easy to define
+multiple flake package outputs that differ only in Cargo feature selections.</li><li><code>mkDevShell</code> - this is a small helper function that reduces duplication
 creating a development shell with a specific Rust version. It also sets the
 <code>RUST_SRC_PATH</code> that many IDEs will use to find the Rust stdlib.</li></ol><h2 id=why-bother>Why bother?</h2><p>This might seem like a lot of work. Why not just use <code>rustup</code> to manage three
 Rust versions and call it a day? For me there are a few primary advantages (<em>and
@@ -121,14 +121,14 @@ lots of smaller ones!</em>):</p><ul><li>Rustup can&rsquo;t manage system level d
 describe which packages a user needs to install before building, or write
 adhoc scripts to install the required dependencies. Keeping the versions used
 by different developers in-sync with one another across different OSes is
-a nightmare. Using a Nix flake makes this trivially reproducible.</li><li>Users of <code>nix</code> or <code>NixOS</code> can consume your project through the Flake,
-effortlessly adding the Flake as an input to their own Nix flakes, or running
+a nightmare. Using a Nix flake makes this trivially reproducible.</li><li>Users of <code>nix</code> or <code>NixOS</code> can consume your project through the flake,
+effortlessly adding the flake as an input to their own Nix flakes, or running
 the project in an ephemeral shell:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>nix run github:cpu/rust-flake
 </span></span></code></pre></div><ul><li>It works for more than just Rust. As one example, ff your project needs Python
-to generate test data you can easily extend the Flake to manage Python runtime
+to generate test data you can easily extend the flake to manage Python runtime
 versions and <code>pip</code> dependencies.</li><li>You can reuse the same reproducible dev. environments for your CI. This
 eliminates the classic blunders that ensue when the native dependency versions
-or toolchain versions installed in CI drift from what you use locally.</li></ul><h2 id=conclusion>Conclusion</h2><p>This Flake isn&rsquo;t too complicated, but it can take some time to combine the
+or toolchain versions installed in CI drift from what you use locally.</li></ul><h2 id=conclusion>Conclusion</h2><p>This flake isn&rsquo;t too complicated, but it can take some time to combine the
 bits and pieces from different documentation sources to make a unified whole.
 Hopefully this example helps demystify the complete picture.</p><p>You can find the complete example with the accompanying Rust crate in
 <a href=https://github.com/cpu/rust-flake>cpu/rust-flake</a>. That repo also shows how to set up GitHub actions CI to use

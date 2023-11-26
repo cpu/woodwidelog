@@ -33,7 +33,7 @@ will change the spoken message. You can find the complete example in
 &lt;p>The Rust code depends on the &lt;a href="https://crates.io/crates/tts">tts-rs&lt;/a> crate for its text-to-speech magic, which
 in turn uses the &lt;a href="https://crates.io/crates/speech-dispatcher">speech-dispatcher&lt;/a> and &lt;a href="https://crates.io/crates/speech-dispatcher-sys">speech-dispatcher-sys&lt;/a> crates. On
 Linux, the &lt;code>-sys&lt;/code> crate uses &lt;a href="https://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config&lt;/a> and &lt;a href="https://github.com/mozilla/cbindgen">cbindgen&lt;/a> to generate FFI headers
-for the native &lt;a href="https://wiki.archlinux.org/title/Speech_dispatcher">speechd&lt;/a> dependency. Getting this working reliable without Nix
+for the native &lt;a href="https://wiki.archlinux.org/title/Speech_dispatcher">speechd&lt;/a> dependency. Getting this working reliably without Nix
 would require manually installing extra system packages (using &lt;code>apt-get&lt;/code>, &lt;code>yum&lt;/code>,
 &lt;code>brew&lt;/code>, etc) and be difficult to reproduce consistently across systems.&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-nix" data-lang="nix">&lt;span style="display:flex;">&lt;span>{
@@ -132,9 +132,9 @@ development environment directly:&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="details">Details&lt;/h2>
 &lt;p>Some points of interest:&lt;/p>
 &lt;ol>
-&lt;li>&lt;code>cargo.toml&lt;/code> - The Cargo metadata is read into a Nix binding, &lt;code>cargoToml&lt;/code>,
+&lt;li>&lt;code>cargoToml&lt;/code> - The Cargo metadata is read into a Nix binding, &lt;code>cargoToml&lt;/code>,
 and used to avoid duplicating the project name, Cargo version, or MSRV in
-both the &lt;code>Cargo.toml&lt;/code> and the Nix Flake.&lt;/li>
+both the &lt;code>Cargo.toml&lt;/code> and the Nix flake.&lt;/li>
 &lt;li>&lt;code>runtimeDeps&lt;/code>, &lt;code>buildDeps&lt;/code> and &lt;code>devDeps&lt;/code> - I often have to remind myself the
 difference between &lt;code>buildInputs&lt;/code> and &lt;code>nativeBuildInputs&lt;/code> so I make these
 helpful bindings:
@@ -151,8 +151,8 @@ shells.&lt;/li>
 There&amp;rsquo;s a handy &lt;code>bindgenHook&lt;/code> that we use for this purpose, letting it do all
 the heavy lifting. No need to muck with &lt;code>LIBCLANG_PATH&lt;/code>.&lt;/li>
 &lt;li>&lt;code>withFeatures&lt;/code> - this is a small helper function that reduces duplication
-building a Nix Flake output from a Rust project. It makes it easy to define
-multiple Flake package outputs that differ only in Cargo feature selections.&lt;/li>
+building a Nix flake output from a Rust project. It makes it easy to define
+multiple flake package outputs that differ only in Cargo feature selections.&lt;/li>
 &lt;li>&lt;code>mkDevShell&lt;/code> - this is a small helper function that reduces duplication
 creating a development shell with a specific Rust version. It also sets the
 &lt;code>RUST_SRC_PATH&lt;/code> that many IDEs will use to find the Rust stdlib.&lt;/li>
@@ -167,21 +167,21 @@ describe which packages a user needs to install before building, or write
 adhoc scripts to install the required dependencies. Keeping the versions used
 by different developers in-sync with one another across different OSes is
 a nightmare. Using a Nix flake makes this trivially reproducible.&lt;/li>
-&lt;li>Users of &lt;code>nix&lt;/code> or &lt;code>NixOS&lt;/code> can consume your project through the Flake,
-effortlessly adding the Flake as an input to their own Nix flakes, or running
+&lt;li>Users of &lt;code>nix&lt;/code> or &lt;code>NixOS&lt;/code> can consume your project through the flake,
+effortlessly adding the flake as an input to their own Nix flakes, or running
 the project in an ephemeral shell:&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>nix run github:cpu/rust-flake
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
 &lt;li>It works for more than just Rust. As one example, ff your project needs Python
-to generate test data you can easily extend the Flake to manage Python runtime
+to generate test data you can easily extend the flake to manage Python runtime
 versions and &lt;code>pip&lt;/code> dependencies.&lt;/li>
 &lt;li>You can reuse the same reproducible dev. environments for your CI. This
 eliminates the classic blunders that ensue when the native dependency versions
 or toolchain versions installed in CI drift from what you use locally.&lt;/li>
 &lt;/ul>
 &lt;h2 id="conclusion">Conclusion&lt;/h2>
-&lt;p>This Flake isn&amp;rsquo;t too complicated, but it can take some time to combine the
+&lt;p>This flake isn&amp;rsquo;t too complicated, but it can take some time to combine the
 bits and pieces from different documentation sources to make a unified whole.
 Hopefully this example helps demystify the complete picture.&lt;/p>
 &lt;p>You can find the complete example with the accompanying Rust crate in
