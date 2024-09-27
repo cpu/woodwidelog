@@ -125,13 +125,13 @@ try and help it get it there.
 [Knot]: https://www.knot-dns.cz/
 [prossimo]: https://www.memorysafety.org/
 [supporting Trust-DNS]: https://www.memorysafety.org/initiative/dns/
-[Trust-DNS]: https://github.com/bluejekyll/trust-dns
-[recently switched]: https://github.com/bluejekyll/trust-dns/pull/1859
-[clean-up]: https://github.com/bluejekyll/trust-dns/pull/1873
+[Trust-DNS]: https://github.com/hickory-dns/hickory-dns
+[recently switched]: https://github.com/hickory-dns/hickory-dns/pull/1859
+[clean-up]: https://github.com/hickory-dns/hickory-dns/pull/1873
 [RFC 1035]: https://datatracker.ietf.org/doc/html/rfc1035
 [MASTER FILES]: https://datatracker.ietf.org/doc/html/rfc1035#autoid-48
-[a small PR]: https://github.com/bluejekyll/trust-dns/pull/1874
-[fixed]: https://github.com/bluejekyll/trust-dns/pull/1877
+[a small PR]: https://github.com/hickory-dns/hickory-dns/pull/1874
+[fixed]: https://github.com/hickory-dns/hickory-dns/pull/1877
 
 # Thinking about
 
