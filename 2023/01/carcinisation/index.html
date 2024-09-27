@@ -37,13 +37,13 @@ terrifying intersection of performance critical code and having to parse complex
 and untrusted data from a network socket. For that reason I was stoked when
 <a href=https://www.memorysafety.org/>ISRG&rsquo;s Prossimo project</a> announced support for a DNS initiative
 <a href=https://www.memorysafety.org/initiative/dns/>supporting Trust-DNS</a>, a suite of DNS software written in Rust.</p><p>After whipping up a quick Nix derivation (<em>I haven&rsquo;t cleaned this up for
-Nixpkgs yet, stay tuned</em>) I decided to try and take <a href=https://github.com/bluejekyll/trust-dns>Trust-DNS</a> for a spin with
+Nixpkgs yet, stay tuned</em>) I decided to try and take <a href=https://github.com/hickory-dns/hickory-dns>Trust-DNS</a> for a spin with
 my zone data. I hit a couple snags right away which made for a great chance to
 roll my sleeves up.</p><p>The first snag was simple: I was spinning my wheels looking for a <code>named</code> binary
 that was referenced in the README instructions but that wasn&rsquo;t being produced by
 my derivation, or a vanilla <code>cargo</code> build. It turned out this was just bad
-timing, the project only <a href=https://github.com/bluejekyll/trust-dns/pull/1859>recently switched</a> to preferring a <code>trust-dns</code> binary
-name. I was able to <a href=https://github.com/bluejekyll/trust-dns/pull/1873>clean up the remaining references</a> with some
+timing, the project only <a href=https://github.com/hickory-dns/hickory-dns/pull/1859>recently switched</a> to preferring a <code>trust-dns</code> binary
+name. I was able to <a href=https://github.com/hickory-dns/hickory-dns/pull/1873>clean up the remaining references</a> with some
 <code>grep</code>/<code>sed</code> magic.</p><p>The second snag was more interesting: the zone data files I had been carrying
 around for ~10 years were failing to parse with an error like:</p><blockquote><p>Error { kind: Message(&ldquo;record class not specified&rdquo;) }'</p></blockquote><p>Much like the error claims, none of my records specified a record class. It
 seems this never came up for me before now because both Knot and BIND would
@@ -57,10 +57,10 @@ to the last explicitly stated values.</p></blockquote><p>In classic RFC fashion 
 where there <em>isn&rsquo;t any</em> explicitly stated value. The class and TTL are both
 optional, so what do you do when zero records specify a class? In this case,
 like most areas where the RFCs are vague, most folks just Do What BIND
-Does&#8482;&#xfe0f;. For this situation that means &ldquo;assume the class is IN&rdquo;.</p><p>I whipped up <a href=https://github.com/bluejekyll/trust-dns/pull/1874>a small PR</a> to adopt this behaviour and <code>trust-dns</code> was able to
+Does&#8482;&#xfe0f;. For this situation that means &ldquo;assume the class is IN&rdquo;.</p><p>I whipped up <a href=https://github.com/hickory-dns/hickory-dns/pull/1874>a small PR</a> to adopt this behaviour and <code>trust-dns</code> was able to
 parse my zones without any other changes. &#x1f389; Folks seem in agreement that
 supporting this type of zone file is sensible so we&rsquo;re just waiting on some
-other review details to be sorted out. Along the way I also <a href=https://github.com/bluejekyll/trust-dns/pull/1877>fixed</a> a small
+other review details to be sorted out. Along the way I also <a href=https://github.com/hickory-dns/hickory-dns/pull/1877>fixed</a> a small
 <code>cargo audit</code> CI failure with a trivial dep. bump.</p><p>Trust-DNS isn&rsquo;t quite ready to replace Knot for my use-cases but I&rsquo;m excited to
 try and help it get it there.</p><h1 id=thinking-about>Thinking about</h1><p><img src=./happyrock.jpg alt="Happy rock"></p><ul><li><a href=https://en.wikipedia.org/wiki/Happy_Rock>Happy Rock</a> - a glorious roadside attraction <em>slash</em> information centre for
 Gladstone Manitoba. What a dapper looking rock.</li><li><a href=https://veggie.dog/>Veggie Dog</a> - my (<em>much smarter and much more talented</em>) love has a blog of

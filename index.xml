@@ -451,14 +451,14 @@ and untrusted data from a network socket. For that reason I was stoked when
 &lt;a href="https://www.memorysafety.org/">ISRG&amp;rsquo;s Prossimo project&lt;/a> announced support for a DNS initiative
 &lt;a href="https://www.memorysafety.org/initiative/dns/">supporting Trust-DNS&lt;/a>, a suite of DNS software written in Rust.&lt;/p>
 &lt;p>After whipping up a quick Nix derivation (&lt;em>I haven&amp;rsquo;t cleaned this up for
-Nixpkgs yet, stay tuned&lt;/em>) I decided to try and take &lt;a href="https://github.com/bluejekyll/trust-dns">Trust-DNS&lt;/a> for a spin with
+Nixpkgs yet, stay tuned&lt;/em>) I decided to try and take &lt;a href="https://github.com/hickory-dns/hickory-dns">Trust-DNS&lt;/a> for a spin with
 my zone data. I hit a couple snags right away which made for a great chance to
 roll my sleeves up.&lt;/p>
 &lt;p>The first snag was simple: I was spinning my wheels looking for a &lt;code>named&lt;/code> binary
 that was referenced in the README instructions but that wasn&amp;rsquo;t being produced by
 my derivation, or a vanilla &lt;code>cargo&lt;/code> build. It turned out this was just bad
-timing, the project only &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1859">recently switched&lt;/a> to preferring a &lt;code>trust-dns&lt;/code> binary
-name. I was able to &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1873">clean up the remaining references&lt;/a> with some
+timing, the project only &lt;a href="https://github.com/hickory-dns/hickory-dns/pull/1859">recently switched&lt;/a> to preferring a &lt;code>trust-dns&lt;/code> binary
+name. I was able to &lt;a href="https://github.com/hickory-dns/hickory-dns/pull/1873">clean up the remaining references&lt;/a> with some
 &lt;code>grep&lt;/code>/&lt;code>sed&lt;/code> magic.&lt;/p>
 &lt;p>The second snag was more interesting: the zone data files I had been carrying
 around for ~10 years were failing to parse with an error like:&lt;/p>
@@ -483,10 +483,10 @@ where there &lt;em>isn&amp;rsquo;t any&lt;/em> explicitly stated value. The clas
 optional, so what do you do when zero records specify a class? In this case,
 like most areas where the RFCs are vague, most folks just Do What BIND
 Does&amp;#x2122;&amp;#xfe0f;. For this situation that means &amp;ldquo;assume the class is IN&amp;rdquo;.&lt;/p>
-&lt;p>I whipped up &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1874">a small PR&lt;/a> to adopt this behaviour and &lt;code>trust-dns&lt;/code> was able to
+&lt;p>I whipped up &lt;a href="https://github.com/hickory-dns/hickory-dns/pull/1874">a small PR&lt;/a> to adopt this behaviour and &lt;code>trust-dns&lt;/code> was able to
 parse my zones without any other changes. &amp;#x1f389; Folks seem in agreement that
 supporting this type of zone file is sensible so we&amp;rsquo;re just waiting on some
-other review details to be sorted out. Along the way I also &lt;a href="https://github.com/bluejekyll/trust-dns/pull/1877">fixed&lt;/a> a small
+other review details to be sorted out. Along the way I also &lt;a href="https://github.com/hickory-dns/hickory-dns/pull/1877">fixed&lt;/a> a small
 &lt;code>cargo audit&lt;/code> CI failure with a trivial dep. bump.&lt;/p>
 &lt;p>Trust-DNS isn&amp;rsquo;t quite ready to replace Knot for my use-cases but I&amp;rsquo;m excited to
 try and help it get it there.&lt;/p>
