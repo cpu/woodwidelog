@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on Wood Wide Log</title><link>https://log.woodweb.ca/articles/</link><description>Recent content in Articles on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sat, 05 Oct 2024 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/articles/index.xml" rel="self" type="application/rss+xml"/><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app. that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on Wood Wide Log</title><link>https://log.woodweb.ca/articles/</link><description>Recent content in Articles on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sat, 05 Oct 2024 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/articles/index.xml" rel="self" type="application/rss+xml"/><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
 certificates, and one day out of the blue those certs. are being rejected for
 malformed subject alternative names (SANs) with confusing errors like:&lt;/p>
 &lt;blockquote>
@@ -91,8 +91,11 @@ SEQUENCE {
 }
 &amp;lt;snipped&amp;gt;
 &lt;/code>&lt;/pre>&lt;p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
-certificate DER (&lt;code>openssl asn1parse&lt;/code>) but it&amp;rsquo;s crummy compared to &lt;code>der-ascii&lt;/code>
-and only shows the whole SAN extension as a hex encoded octet string.&lt;/p>
+certificate DER (&lt;code>openssl asn1parse&lt;/code>) but it&amp;rsquo;s lackluster compared to
+&lt;code>der-ascii&lt;/code> and only shows the whole SAN extension as a hex encoded octet
+string. It&amp;rsquo;s also perhaps not a great idea to be piping data expected to be
+malformed in some way through a tool written in C with a history of memory
+safety vulns in its parsing code&amp;hellip; In contrast, &lt;code>der-ascii&lt;/code> is written in Go.&lt;/p>
 &lt;p>In either case I think we can all agree this certificate is busted: it has
 a clearly invalid &lt;code>dNSName&lt;/code> SAN and no &lt;code>iPAddress&lt;/code> SAN at all.&lt;/p>
 &lt;h2 id="what-changed">What changed?&lt;/h2>

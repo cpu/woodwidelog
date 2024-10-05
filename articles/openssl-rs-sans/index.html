@@ -1,5 +1,5 @@
 <!doctype html><html><head lang=en><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>Why is Rust OpenSSL suddenly making invalid SANS? - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content='If you have a Rust app. that uses the openssl crate to generate
+<meta name=description content='If you have a Rust app that uses the openssl crate to generate
 certificates, and one day out of the blue those certs. are being rejected for
 malformed subject alternative names (SANs) with confusing errors like:
 
@@ -10,18 +10,18 @@ or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
 
 Then the root cause is almost certainly that your app was relying on an API quirk
-in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:image" content><meta property="og:url" content="https://log.woodweb.ca/articles/openssl-rs-sans/"><meta property="og:site_name" content="Wood Wide Log"><meta property="og:title" content="Why is Rust OpenSSL suddenly making invalid SANS?"><meta property="og:description" content='If you have a Rust app. that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
+in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:image" content><meta property="og:url" content="https://log.woodweb.ca/articles/openssl-rs-sans/"><meta property="og:site_name" content="Wood Wide Log"><meta property="og:title" content="Why is Rust OpenSSL suddenly making invalid SANS?"><meta property="og:description" content='If you have a Rust app that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
 certificate is valid for example.com, www.example.com, not example.com
 or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
-Then the root cause is almost certainly that your app was relying on an API quirk in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="articles"><meta property="article:published_time" content="2024-10-05T08:00:00-04:00"><meta property="article:modified_time" content="2024-10-05T08:00:00-04:00"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="Why is Rust OpenSSL suddenly making invalid SANS?"><meta name=twitter:description content='If you have a Rust app. that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
+Then the root cause is almost certainly that your app was relying on an API quirk in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="articles"><meta property="article:published_time" content="2024-10-05T08:00:00-04:00"><meta property="article:modified_time" content="2024-10-05T08:00:00-04:00"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="Why is Rust OpenSSL suddenly making invalid SANS?"><meta name=twitter:description content='If you have a Rust app that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
 certificate is valid for example.com, www.example.com, not example.com
 or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
 Then the root cause is almost certainly that your app was relying on an API quirk in the openssl crate that went away with a bugfix that landed in 2023.'><script src=https://log.woodweb.ca/js/feather.min.js></script><link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.d10d882a0feb2833d6bb41c11b088fd0710c01566f5092017beb42fa48bc7762.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Log</a>
 <a href=/articles>Articles</a>
 <a href=/posts>Archive</a>
-<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>Why is Rust OpenSSL suddenly making invalid SANS?</h1><div class=meta>Posted on Oct 5, 2024</div></div><section class=body><p>If you have a Rust app. that uses the <a href=https://crates.io/crates/openssl>openssl crate</a> to generate
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>Why is Rust OpenSSL suddenly making invalid SANS?</h1><div class=meta>Posted on Oct 5, 2024</div></div><section class=body><p>If you have a Rust app that uses the <a href=https://crates.io/crates/openssl>openssl crate</a> to generate
 certificates, and one day out of the blue those certs. are being rejected for
 malformed subject alternative names (SANs) with confusing errors like:</p><blockquote><p><code>certificate is valid for example.com, www.example.com, not example.com</code></p></blockquote><p>or:</p><blockquote><p><code>Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character</code></p></blockquote><p>Then the root cause is almost certainly that your app was relying on an API quirk
 in the <code>openssl</code> crate that went away with a bugfix that landed in 2023.</p><h1 id=the-short-story>The short story</h1><p>While I find the longer story interesting, if you just want to fix your app
@@ -84,8 +84,11 @@ SEQUENCE {
 }
 &lt;snipped&gt;
 </code></pre><p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
-certificate DER (<code>openssl asn1parse</code>) but it&rsquo;s crummy compared to <code>der-ascii</code>
-and only shows the whole SAN extension as a hex encoded octet string.</p><p>In either case I think we can all agree this certificate is busted: it has
+certificate DER (<code>openssl asn1parse</code>) but it&rsquo;s lackluster compared to
+<code>der-ascii</code> and only shows the whole SAN extension as a hex encoded octet
+string. It&rsquo;s also perhaps not a great idea to be piping data expected to be
+malformed in some way through a tool written in C with a history of memory
+safety vulns in its parsing code&mldr; In contrast, <code>der-ascii</code> is written in Go.</p><p>In either case I think we can all agree this certificate is busted: it has
 a clearly invalid <code>dNSName</code> SAN and no <code>iPAddress</code> SAN at all.</p><h2 id=what-changed>What changed?</h2><p>Knowing the problem with the certificate doesn&rsquo;t explain why certificate
 generation code that <em>used to</em> produce valid certificates is now producing
 certificates with freak-show conjoined SANs.</p><p>In the case of issue 1292 the generation code in question used the <a href=https://crates.io/crates/openssl>openssl
