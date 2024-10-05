@@ -37,7 +37,7 @@ won&amp;rsquo;t help you fix your bug (and you are missing security fixes for
 vulnerabilities!).&lt;/p>
 &lt;p>If you&amp;rsquo;re interested in gory OpenSSL themed horror, read on.&lt;/p>
 &lt;h1 id="the-long-story">The long story&lt;/h1>
-&lt;p>I first bumped into this confusing situation after &lt;a href="https://github.com/rustls/rustls/issues/1292">rustls#1292&lt;/a> was created by
+&lt;p>I first bumped into this situation after &lt;a href="https://github.com/rustls/rustls/issues/1292">rustls#1292&lt;/a> was created by
 a user confused by an error emitted by Rustls when talking to a server using
 a certificate generated with the Rust &lt;code>openssl&lt;/code> crate. I bumped into it &lt;em>again&lt;/em>
 this week after helping a friend debug a problem with a Rust ACME client,

@@ -42,7 +42,7 @@ instead:</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;backg
 </span></span><span style=display:flex><span>    .build(<span style=color:#f92672>..</span>.)
 </span></span></code></pre></div><p>If you <em>haven&rsquo;t</em> updated <code>openssl</code> past that point then I&rsquo;m afraid this story
 won&rsquo;t help you fix your bug (and you are missing security fixes for
-vulnerabilities!).</p><p>If you&rsquo;re interested in gory OpenSSL themed horror, read on.</p><h1 id=the-long-story>The long story</h1><p>I first bumped into this confusing situation after <a href=https://github.com/rustls/rustls/issues/1292>rustls#1292</a> was created by
+vulnerabilities!).</p><p>If you&rsquo;re interested in gory OpenSSL themed horror, read on.</p><h1 id=the-long-story>The long story</h1><p>I first bumped into this situation after <a href=https://github.com/rustls/rustls/issues/1292>rustls#1292</a> was created by
 a user confused by an error emitted by Rustls when talking to a server using
 a certificate generated with the Rust <code>openssl</code> crate. I bumped into it <em>again</em>
 this week after helping a friend debug a problem with a Rust ACME client,
