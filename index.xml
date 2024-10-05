@@ -73,7 +73,7 @@ chance to use one as a kid.&lt;/li>
 related projects please and thank you&amp;hellip;&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
+&lt;/div></description></item><item><title>Why is Rust OpenSSL suddenly making invalid SANs?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
 certificates, and one day out of the blue those certs. are being rejected for
 malformed subject alternative names (SANs) with confusing errors like:&lt;/p>
 &lt;blockquote>
