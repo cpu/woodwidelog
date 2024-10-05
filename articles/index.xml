@@ -1,4 +1,150 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on Wood Wide Log</title><link>https://log.woodweb.ca/articles/</link><description>Recent content in Articles on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sun, 26 Nov 2023 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/articles/index.xml" rel="self" type="application/rss+xml"/><item><title>A Beyond-the-basics Rust Flake</title><link>https://log.woodweb.ca/articles/rust-flake/</link><pubDate>Sun, 26 Nov 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/rust-flake/</guid><description>&lt;h1 id="about">About&lt;/h1>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Articles on Wood Wide Log</title><link>https://log.woodweb.ca/articles/</link><description>Recent content in Articles on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sat, 05 Oct 2024 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/articles/index.xml" rel="self" type="application/rss+xml"/><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app. that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
+certificates, and one day out of the blue those certs. are being rejected for
+malformed subject alternative names (SANs) with confusing errors like:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>certificate is valid for example.com, www.example.com, not example.com&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;p>or:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;code>Cannot issue for &amp;quot;example.com, dns:www.example.com&amp;quot;: Domain name contains an invalid character&lt;/code>&lt;/p>
+&lt;/blockquote>
+&lt;p>Then the root cause is almost certainly that your app was relying on an API quirk
+in the &lt;code>openssl&lt;/code> crate that went away with a bugfix that landed in 2023.&lt;/p>
+&lt;h1 id="the-short-story">The short story&lt;/h1>
+&lt;p>While I find the longer story interesting, if you just want to fix your app
+immediately you should:&lt;/p>
+&lt;ul>
+&lt;li>Check if you, or a transitive dependency, updated to &lt;code>openssl &amp;gt;= 0.10.48&lt;/code>.&lt;/li>
+&lt;li>Replace any invocations of &lt;a href="https://docs.rs/openssl/latest/openssl/x509/extension/struct.SubjectAlternativeName.html">SubjectAlternativeName&lt;/a> builder fns that were
+provided comma separated values to use one builder invocation per value
+instead:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Bad:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">let&lt;/span> example &lt;span style="color:#f92672">=&lt;/span> SubjectAlternativeName::new()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;example.com, www.example.com&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .ip(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1, 8.8.8.8&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .build(&lt;span style="color:#f92672">..&lt;/span>.)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Good:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">let&lt;/span> example &lt;span style="color:#f92672">=&lt;/span> SubjectAlternativeName::new()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;example.com&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;www.example.com&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .ip(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .ip(&lt;span style="color:#e6db74">&amp;#34;8.8.8.8&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .build(&lt;span style="color:#f92672">..&lt;/span>.)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>If you &lt;em>haven&amp;rsquo;t&lt;/em> updated &lt;code>openssl&lt;/code> past that point then I&amp;rsquo;m afraid this story
+won&amp;rsquo;t help you fix your bug (and you are missing security fixes for
+vulnerabilities!).&lt;/p>
+&lt;p>If you&amp;rsquo;re interested in gory OpenSSL themed horror, read on.&lt;/p>
+&lt;h1 id="the-long-story">The long story&lt;/h1>
+&lt;p>I first bumped into this confusing situation after &lt;a href="https://github.com/rustls/rustls/issues/1292">rustls#1292&lt;/a> was created by
+a user confused by an error emitted by Rustls when talking to a server using
+a certificate generated with the Rust &lt;code>openssl&lt;/code> crate. I bumped into it &lt;em>again&lt;/em>
+this week after helping a friend debug a problem with a Rust ACME client,
+prompting the idea to write this stuff down :)&lt;/p>
+&lt;h2 id="beware-openssl-text">Beware OpenSSL text&lt;/h2>
+&lt;p>Often the first thing folks reach for in these cases is the &lt;code>openssl&lt;/code> command
+line tool to dump a textual representation of a problematic PEM encoded X.509
+certificate to check its subject alternative names:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>openssl x509 -in $PATH_TO_PEM_CERT -noout -text | &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> grep --after-context&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Subject Alternative Name:&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Which in the case of &lt;a href="https://gist.github.com/cpu/43697ca55fccd04e91f66540ea66ae62">the cert provided&lt;/a> in issue 1292, printed:&lt;/p>
+&lt;pre tabindex="0">&lt;code> X509v3 Subject Alternative Name:
+DNS:localhost, IP:127.0.0.1, DNS:localhost
+&lt;/code>&lt;/pre>&lt;p>The duplicate &lt;code>&amp;quot;localhost&amp;quot;&lt;/code> &lt;code>dNSName&lt;/code> type SAN stands out, but I&amp;rsquo;ll spoil the
+surprise a bit and say it&amp;rsquo;s a red herring. The real issue is that OpenSSL&amp;rsquo;s
+text output is a pretty crummy tool for this sort of debugging. It&amp;rsquo;s deceived us
+by not providing any delimiters around each SAN&amp;rsquo;s &lt;code>GeneralName&lt;/code> values! What
+appears to be &lt;em>three&lt;/em> SANs is actually just &lt;strong>two&lt;/strong>.&lt;/p>
+&lt;ol>
+&lt;li>One &lt;code>dNSName&lt;/code> type general name with the value &lt;code>&amp;quot;localhost, IP:127.0.0.1&amp;quot;&lt;/code>&lt;/li>
+&lt;li>One &lt;code>dnsName&lt;/code> type general name with the value &lt;code>&amp;quot;localhost&amp;quot;&lt;/code>&lt;/li>
+&lt;/ol>
+&lt;p>You can verify this with a more capable low-level tool like &lt;a href="https://github.com/google/der-ascii">der-ascii&lt;/a>:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>der2ascii -pem -i $PATH_TO_PEM_CERT
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will print a lot decoded ASN.1 data&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, but most importantly, the &lt;code>subjectAltName&lt;/code>
+extension where the invalid SAN problem is easily visible:&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;lt;snipped&amp;gt;
+SEQUENCE {
+# subjectAltName
+OBJECT_IDENTIFIER { 2.5.29.17 }
+OCTET_STRING {
+SEQUENCE {
+[2 PRIMITIVE] { &amp;#34;localhost, IP:127.0.0.1&amp;#34; }
+[2 PRIMITIVE] { &amp;#34;localhost&amp;#34; }
+}
+}
+}
+&amp;lt;snipped&amp;gt;
+&lt;/code>&lt;/pre>&lt;p>A valid certificate for both &lt;code>localhost&lt;/code> and &lt;code>127.0.0.1&lt;/code> should instead have
+a SAN extension like:&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;lt;snipped&amp;gt;
+SEQUENCE {
+# subjectAltName
+OBJECT_IDENTIFIER { 2.5.29.17 }
+OCTET_STRING {
+SEQUENCE {
+[2 PRIMITIVE] { &amp;#34;localhost&amp;#34; }
+[7 PRIMITIVE] { &amp;#34;127.0.0.1&amp;#34; }
+}
+}
+}
+&amp;lt;snipped&amp;gt;
+&lt;/code>&lt;/pre>&lt;p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
+certificate DER (&lt;code>openssl asn1parse&lt;/code>) but it&amp;rsquo;s crummy compared to &lt;code>der-ascii&lt;/code>
+and only shows the whole SAN extension as a hex encoded octet string.&lt;/p>
+&lt;p>In either case I think we can all agree this certificate is busted: it has
+a clearly invalid &lt;code>dNSName&lt;/code> SAN and no &lt;code>iPAddress&lt;/code> SAN at all.&lt;/p>
+&lt;h2 id="what-changed">What changed?&lt;/h2>
+&lt;p>Knowing the problem with the certificate doesn&amp;rsquo;t explain why certificate
+generation code that &lt;em>used to&lt;/em> produce valid certificates is now producing
+certificates with freak-show conjoined SANs.&lt;/p>
+&lt;p>In the case of issue 1292 the generation code in question used the &lt;a href="https://crates.io/crates/openssl">openssl
+crate&lt;/a> and was building the &lt;a href="https://docs.rs/openssl/latest/openssl/x509/extension/struct.SubjectAlternativeName.html">SubjectAlternativeName&lt;/a> as follows:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> subject_alt_name &lt;span style="color:#f92672">=&lt;/span> SubjectAlternativeName::new()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;localhost, IP:127.0.0.1&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .build(&lt;span style="color:#f92672">&amp;amp;&lt;/span>cert_builder.x509v3_context(Some(&lt;span style="color:#f92672">&amp;amp;&lt;/span>ca_cert_x590), None))&lt;span style="color:#f92672">?&lt;/span>;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This pointed to the root cause being a change in the way the &lt;a href="https://docs.rs/openssl/latest/openssl/x509/extension/struct.SubjectAlternativeName.html#method.dns">dns()&lt;/a> fn
+handled values. It&amp;rsquo;s not a large leap to theorize it must have previously
+allowed specifying multiple comma-separated values and now is treating it as one
+domain name value.&lt;/p>
+&lt;p>The old behaviour does seem confusing: it was using &lt;code>dns()&lt;/code> but also providing an
+&lt;code>IP:&lt;/code> prefixed SAN value. Shouldn&amp;rsquo;t it have used the &lt;code>ip()&lt;/code> fn for that?
+Changing &lt;code>dns()&lt;/code> to disallow that kind of mixed usage seems like great sense.
+With this insight in hand it didn&amp;rsquo;t take long to backtrack to
+&lt;a href="https://github.com/sfackler/rust-openssl/pull/1854">rust-openssl#1854&lt;/a>, &amp;ldquo;Fix a series of security issues&amp;rdquo;.&lt;/p>
+&lt;p>but wait&amp;hellip; Security issues? I thought we were just chasing down a benign API
+change&amp;hellip;&amp;hellip;..&lt;/p>
+&lt;h2 id="horror-shows">Horror Shows&lt;/h2>
+&lt;p>The change in question was to fix &lt;a href="https://rustsec.org/advisories/RUSTSEC-2023-0023.html">RUSTSEC-2023-0023&lt;/a>, a bug reported by &lt;a href="https://davidben.net/">David
+Benjamin&lt;/a> that says:&lt;/p>
+&lt;blockquote>
+&lt;p>SubjectAlternativeName and ExtendedKeyUsage arguments were parsed using the
+OpenSSL function X509V3_EXT_nconf. This function parses all input using an
+OpenSSL mini-language which can perform arbitrary file reads.&lt;/p>
+&lt;/blockquote>
+&lt;p>😱 &amp;ldquo;an OpenSSL mini-language&amp;rdquo;.&lt;/p>
+&lt;p>😱😱 &amp;ldquo;which can perform arbitrary file reads&amp;rdquo;.&lt;/p>
+&lt;p>I believe this situation was correctly summarized by &lt;a href="https://alexgaynor.net/">Alex Gaynor&lt;/a> as
+a &lt;a href="https://github.com/sfackler/rust-openssl/pull/1854/commits/a7528056c5be6f3fbabc52c2fd02882b208d5939">horror show&lt;/a> and certainly seemed perfect for a spooky October blog post.&lt;/p>
+&lt;h1 id="stop-the-madness">Stop the Madness&lt;/h1>
+&lt;p>So now we understand why the certificate is invalid, when &amp;amp; why the &lt;code>openssl&lt;/code>
+crate changed its &lt;code>SubjectAlternativeName&lt;/code> builder behaviour, and how OpenSSL
+continues to provide new and exciting ways to shoot your feet off.&lt;/p>
+&lt;p>I&amp;rsquo;d be remiss if I didn&amp;rsquo;t close this story by suggesting it might be time to
+reconsider your OpenSSL dependencies.&lt;/p>
+&lt;p>For certificate generation needs consider &lt;a href="https://github.com/rustls/rcgen">rcgen&lt;/a> for simpler situations, or the
+Rust Crypto project&amp;rsquo;s &lt;a href="https://docs.rs/x509-cert/latest/x509_cert/">x509-cert&lt;/a> crate if you have more complex needs. For TLS,
+consider &lt;a href="https://github.com/rustls/rustls">rustls&lt;/a>. It&amp;rsquo;s safer, and faster too.&lt;/p>
+&lt;p>Your sanity deserves it.&lt;/p>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>Check out &lt;a href="https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/">A Warm Welcome to ASN.1 and DER&lt;/a> and &lt;a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280&lt;/a> if you&amp;rsquo;re curious about understanding the full &lt;code>der-ascii&lt;/code> output.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>A Beyond-the-basics Rust Flake</title><link>https://log.woodweb.ca/articles/rust-flake/</link><pubDate>Sun, 26 Nov 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/rust-flake/</guid><description>&lt;h1 id="about">About&lt;/h1>
 &lt;p>There are many resources for writing &lt;a href="https://zero-to-nix.com/concepts/flakes">Nix flakes&lt;/a> for Rust projects but in my
 experience they can often be too simple. They may focus on projects without
 complex native code dependencies, or only offer a single development environment
