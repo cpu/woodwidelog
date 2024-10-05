@@ -1,0 +1,43 @@
+<!doctype html><html><head lang=en><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>Resume - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="[tap tap tap] Is this thing on?"><meta property="og:image" content><meta property="og:url" content="https://log.woodweb.ca/2024/10/resume/"><meta property="og:site_name" content="Wood Wide Log"><meta property="og:title" content="Resume"><meta property="og:description" content="[tap tap tap] Is this thing on?"><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-10-05T08:00:00-04:00"><meta property="article:modified_time" content="2024-10-05T08:00:00-04:00"><meta property="og:image" content="https://log.woodweb.ca/2024/10/resume/feature.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2024/10/resume/feature.jpg"><meta name=twitter:title content="Resume"><meta name=twitter:description content="[tap tap tap] Is this thing on?"><script src=https://log.woodweb.ca/js/feather.min.js></script><link href=https://log.woodweb.ca/css/fonts.2c2227b81b1970a03e760aa2e6121cd01f87c88586803cbb282aa224720a765f.css rel=stylesheet><link rel=stylesheet type=text/css media=screen href=https://log.woodweb.ca/css/main.5cebd7d4fb2b97856af8d32a6def16164fcf7d844e98e236fcb3559655020373.css><link rel=stylesheet type=text/css href=https://log.woodweb.ca/css/custom.d10d882a0feb2833d6bb41c11b088fd0710c01566f5092017beb42fa48bc7762.css></head><body><div class=content><header><div class=main><a href=https://log.woodweb.ca/>Wood Wide Log</a></div><nav><a href=/>Log</a>
+<a href=/articles>Articles</a>
+<a href=/posts>Archive</a>
+<a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>Resume</h1><div class=meta>Posted on Oct 5, 2024</div></div><section class=body><p>Like a million before me I fell into the most classic of blunders:</p><ol><li>Overestimating my ability to do interesting work while also writing about it.</li><li>Letting the time since my last post grow and grow and grow until it became an
+akward burden.</li></ol><p>In my experience the only fix is to say &ldquo;<em>lol, lmao</em>&rdquo; and post through it, so
+here we are.</p><p><img src=./mushview.jpg alt="Mushroom view"></p><h1 id=lately>Lately</h1><h2 id=articles>Articles</h2><p>In an effort to try and make dev log updates light-weight and easier to write
+I&rsquo;ve started to split out more involved content as <a href=/articles>articles</a> in a different
+site category.</p><p>So far I&rsquo;ve posted two:</p><ol><li>An <a href=/articles/rust-flake>example Nix flake</a> for a Rust project. In particular I wanted an example
+that supported a project with non-Rust native library dependencies and that
+tested multiple Rust versions (nightly, stable, and an MSRV).</li><li>A &#x1f47b; SpOoKy October story &#x1f47b; about why your Rust OpenSSL certificate
+generation code might have started <a href=/articles/openssl-rs-sans/>spitting out malformed
+SANs</a> one day.</li></ol><h2 id=rustls>Rustls</h2><p><a href=/2023/05/new-and-old>Last time</a> I posted I was new to both Rust, and to contributing to <a href=https://github.com/rustls/rustls>rustls</a>.</p><p>Since then I&rsquo;ve been able to land features and bug-fixes across a number of Rust
+crates, both those owned by the Rustls org (<code>rustls</code>, <code>rustls-ffi</code>, <code>webpki</code>,
+<code>rustls-platform-verifier</code>, &mldr;) as well as projects upstream (<code>aws-lc-rs</code>, &mldr;)
+and downstream (<code>ureq</code>, <code>hyper</code>, <code>curl</code>, <code>trust-dns</code>, &mldr;). I&rsquo;m extremely
+grateful to the excellent mentorship I&rsquo;ve had from <a href=https://github.com/ctz>@ctz</a>, <a href=https://github.com/djc>@djc</a>, <a href=https://github.com/bdaehlie>@bdaehlie</a>,
+<a href=https://github.com/jsha>@jsha</a>, <a href=https://github.com/complexspaces>@complexspaces</a> and many others. I hope to find time to write more
+about some of the interesting bits of work the Rustls team completed over the
+past couple of years.</p><h2 id=go-fips-140-3>Go FIPS-140-3</h2><p>I&rsquo;m spending my remaining full-time work hours in 2024 splitting my time
+between Rustls, and an effort lead by <a href=https://filippo.io/>Filippo Valsorda</a> to obtain a <a href=https://github.com/golang/go/issues/69536>FIPS 140-3
+validation</a> for Go&rsquo;s standard library crypto packages.</p><p>Like most security engineers I think my relationship with FIPS-140 is more of an
+&ldquo;it&rsquo;s complicated&rdquo; situation. However, a practical mindset demands that the need
+be acknowledged. I also think we&rsquo;re overdue for more precedent in the area of
+memory-safe FIPS-140-3 certified cryptography libraries that <em>aren&rsquo;t</em> Bouncy
+Castle.</p><h2 id=hire-me>Hire me?</h2><p>My contracts with <a href=https://www.memorysafety.org/>Prossimo</a> and the Go FIPS 140-3 effort are due to run out
+towards the end of 2024. That means I expect to be available<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> for contract
+work, or potentially full-time employment, starting January 2025
+(<strong>remote-only</strong>).</p><p>If you think my skillset could help you with a project, or if you want to
+support the Rustls ecosystem of projects by sponsoring work, please reach out to
+<code>daniel &lt;at> binaryparadox.net</code>.</p><h1 id=thinking-about>Thinking about</h1><ul><li><a href=https://cryptography101.ca/>Cryptography 101</a>. Recently Alfred Menezes has been publishing modern
+cryptography tutorials online. The coverage of <a href=https://cryptography101.ca/kyber-dilithium/>Kyber and Dilithium</a>, (<em>also
+known by their boring NIST names, &ldquo;ML-KEM&rdquo; and ML-DSA"</em>), is a great place to
+jump in.</li><li><a href=https://www.youtube.com/@TwinCitiesPBS>Twin Cities PBS</a>. A treasure trove of content. Particular shout-out to the
+fascinating documentaries on <a href="https://www.youtube.com/watch?v=8BSDZ1DIEIQ">the Baldies</a> and <a href="https://www.youtube.com/watch?v=_xNcxhKppFM">Hüsker Dü</a>.</li><li><a href=https://jasoneckert.github.io/myblog/icon-computer/>Ontario&rsquo;s Computer</a>. The Burroughs ICON (<em>A.K.A. the bionic beaver</em>) is
+unlike anything else. It was a QNX-based UNIX platform sponsored by the
+Ontario government for use in Canadian schools. These were just barely hanging
+on when I was in gradeschool and now that they&rsquo;re unobtanium I&rsquo;m grateful I got the
+chance to use one as a kid.</li></ul><h1 id=until-next-time>Until next time</h1><p><img src=./crescent.jpg alt="Northern Crescent butterfly"></p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>No on-site or &ldquo;hybrid&rdquo; work, cryptocurrencies, blockchains, or web3
+related projects please and thank you&mldr;&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
+<a class=border></a><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
+<a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
+<a class=border></a></div><div class=footer-info>2024 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>

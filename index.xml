@@ -1,4 +1,79 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sat, 05 Oct 2024 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Wood Wide Log</title><link>https://log.woodweb.ca/</link><description>Recent content on Wood Wide Log</description><language>en-us</language><copyright>Daniel McCarney</copyright><lastBuildDate>Sat, 05 Oct 2024 08:00:00 -0400</lastBuildDate><atom:link href="https://log.woodweb.ca/index.xml" rel="self" type="application/rss+xml"/><item><title>Resume</title><link>https://log.woodweb.ca/2024/10/resume/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/2024/10/resume/</guid><description>&lt;p>Like a million before me I fell into the most classic of blunders:&lt;/p>
+&lt;ol>
+&lt;li>Overestimating my ability to do interesting work while also writing about it.&lt;/li>
+&lt;li>Letting the time since my last post grow and grow and grow until it became an
+akward burden.&lt;/li>
+&lt;/ol>
+&lt;p>In my experience the only fix is to say &amp;ldquo;&lt;em>lol, lmao&lt;/em>&amp;rdquo; and post through it, so
+here we are.&lt;/p>
+&lt;p>&lt;img src="./mushview.jpg" alt="Mushroom view">&lt;/p>
+&lt;h1 id="lately">Lately&lt;/h1>
+&lt;h2 id="articles">Articles&lt;/h2>
+&lt;p>In an effort to try and make dev log updates light-weight and easier to write
+I&amp;rsquo;ve started to split out more involved content as &lt;a href="https://log.woodweb.ca/articles">articles&lt;/a> in a different
+site category.&lt;/p>
+&lt;p>So far I&amp;rsquo;ve posted two:&lt;/p>
+&lt;ol>
+&lt;li>An &lt;a href="https://log.woodweb.ca/articles/rust-flake">example Nix flake&lt;/a> for a Rust project. In particular I wanted an example
+that supported a project with non-Rust native library dependencies and that
+tested multiple Rust versions (nightly, stable, and an MSRV).&lt;/li>
+&lt;li>A &amp;#x1f47b; SpOoKy October story &amp;#x1f47b; about why your Rust OpenSSL certificate
+generation code might have started &lt;a href="https://log.woodweb.ca/articles/openssl-rs-sans/">spitting out malformed
+SANs&lt;/a> one day.&lt;/li>
+&lt;/ol>
+&lt;h2 id="rustls">Rustls&lt;/h2>
+&lt;p>&lt;a href="https://log.woodweb.ca/2023/05/new-and-old">Last time&lt;/a> I posted I was new to both Rust, and to contributing to &lt;a href="https://github.com/rustls/rustls">rustls&lt;/a>.&lt;/p>
+&lt;p>Since then I&amp;rsquo;ve been able to land features and bug-fixes across a number of Rust
+crates, both those owned by the Rustls org (&lt;code>rustls&lt;/code>, &lt;code>rustls-ffi&lt;/code>, &lt;code>webpki&lt;/code>,
+&lt;code>rustls-platform-verifier&lt;/code>, &amp;hellip;) as well as projects upstream (&lt;code>aws-lc-rs&lt;/code>, &amp;hellip;)
+and downstream (&lt;code>ureq&lt;/code>, &lt;code>hyper&lt;/code>, &lt;code>curl&lt;/code>, &lt;code>trust-dns&lt;/code>, &amp;hellip;). I&amp;rsquo;m extremely
+grateful to the excellent mentorship I&amp;rsquo;ve had from &lt;a href="https://github.com/ctz">@ctz&lt;/a>, &lt;a href="https://github.com/djc">@djc&lt;/a>, &lt;a href="https://github.com/bdaehlie">@bdaehlie&lt;/a>,
+&lt;a href="https://github.com/jsha">@jsha&lt;/a>, &lt;a href="https://github.com/complexspaces">@complexspaces&lt;/a> and many others. I hope to find time to write more
+about some of the interesting bits of work the Rustls team completed over the
+past couple of years.&lt;/p>
+&lt;h2 id="go-fips-140-3">Go FIPS-140-3&lt;/h2>
+&lt;p>I&amp;rsquo;m spending my remaining full-time work hours in 2024 splitting my time
+between Rustls, and an effort lead by &lt;a href="https://filippo.io/">Filippo Valsorda&lt;/a> to obtain a &lt;a href="https://github.com/golang/go/issues/69536">FIPS 140-3
+validation&lt;/a> for Go&amp;rsquo;s standard library crypto packages.&lt;/p>
+&lt;p>Like most security engineers I think my relationship with FIPS-140 is more of an
+&amp;ldquo;it&amp;rsquo;s complicated&amp;rdquo; situation. However, a practical mindset demands that the need
+be acknowledged. I also think we&amp;rsquo;re overdue for more precedent in the area of
+memory-safe FIPS-140-3 certified cryptography libraries that &lt;em>aren&amp;rsquo;t&lt;/em> Bouncy
+Castle.&lt;/p>
+&lt;h2 id="hire-me">Hire me?&lt;/h2>
+&lt;p>My contracts with &lt;a href="https://www.memorysafety.org/">Prossimo&lt;/a> and the Go FIPS 140-3 effort are due to run out
+towards the end of 2024. That means I expect to be available&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> for contract
+work, or potentially full-time employment, starting January 2025
+(&lt;strong>remote-only&lt;/strong>).&lt;/p>
+&lt;p>If you think my skillset could help you with a project, or if you want to
+support the Rustls ecosystem of projects by sponsoring work, please reach out to
+&lt;code>daniel &amp;lt;at&amp;gt; binaryparadox.net&lt;/code>.&lt;/p>
+&lt;h1 id="thinking-about">Thinking about&lt;/h1>
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="https://cryptography101.ca/">Cryptography 101&lt;/a>. Recently Alfred Menezes has been publishing modern
+cryptography tutorials online. The coverage of &lt;a href="https://cryptography101.ca/kyber-dilithium/">Kyber and Dilithium&lt;/a>, (&lt;em>also
+known by their boring NIST names, &amp;ldquo;ML-KEM&amp;rdquo; and ML-DSA&amp;quot;&lt;/em>), is a great place to
+jump in.&lt;/li>
+&lt;li>&lt;a href="https://www.youtube.com/@TwinCitiesPBS">Twin Cities PBS&lt;/a>. A treasure trove of content. Particular shout-out to the
+fascinating documentaries on &lt;a href="https://www.youtube.com/watch?v=8BSDZ1DIEIQ">the Baldies&lt;/a> and &lt;a href="https://www.youtube.com/watch?v=_xNcxhKppFM">Hüsker Dü&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://jasoneckert.github.io/myblog/icon-computer/">Ontario&amp;rsquo;s Computer&lt;/a>. The Burroughs ICON (&lt;em>A.K.A. the bionic beaver&lt;/em>) is
+unlike anything else. It was a QNX-based UNIX platform sponsored by the
+Ontario government for use in Canadian schools. These were just barely hanging
+on when I was in gradeschool and now that they&amp;rsquo;re unobtanium I&amp;rsquo;m grateful I got the
+chance to use one as a kid.&lt;/li>
+&lt;/ul>
+&lt;h1 id="until-next-time">Until next time&lt;/h1>
+&lt;p>&lt;img src="./crescent.jpg" alt="Northern Crescent butterfly">&lt;/p>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>No on-site or &amp;ldquo;hybrid&amp;rdquo; work, cryptocurrencies, blockchains, or web3
+related projects please and thank you&amp;hellip;&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>Why is Rust OpenSSL suddenly making invalid SANS?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
 certificates, and one day out of the blue those certs. are being rejected for
 malformed subject alternative names (SANs) with confusing errors like:&lt;/p>
 &lt;blockquote>
@@ -840,7 +915,7 @@ compare to the approach I used.&lt;/p>
 &lt;li>&lt;a href="https://www.imdb.com/title/tt0090837/">Chopping Mall (1986)&lt;/a>. Look at that title font! Truly one of the
 least intimidating killer robot designs you could imagine. It&amp;rsquo;s a flop of
 a movie, but I really dig the late 80s mall setting.&lt;/li>
-&lt;li>&lt;a href="https://gynvael.coldwind.pl/?lang=en&amp;amp;id=754">Hello World under the microscope&lt;/a>. This work makes other &amp;ldquo;deep
+&lt;li>&lt;a href="https://asawicki.info/articles/Hello_world_under_the_microscope.php5">Hello World under the microscope&lt;/a>. This work makes other &amp;ldquo;deep
 dives&amp;rdquo; look awfully shallow in comparison. Layer after layer of abstractions
 peeled away. &amp;#x1f52c;&lt;/li>
 &lt;li>&lt;a href="https://lwn.net/SubscriberLink/910435/8edb2c6f835f960a/">Fingerprinting systems with TCP source-port selection&lt;/a>.
