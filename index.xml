@@ -152,7 +152,7 @@ SEQUENCE {
 }
 &amp;lt;snipped&amp;gt;
 &lt;/code>&lt;/pre>&lt;p>A valid certificate for both &lt;code>localhost&lt;/code> and &lt;code>127.0.0.1&lt;/code> should instead have
-a SAN extension like:&lt;/p>
+a SAN extension like&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>:&lt;/p>
 &lt;pre tabindex="0">&lt;code>&amp;lt;snipped&amp;gt;
 SEQUENCE {
 # subjectAltName
@@ -160,12 +160,21 @@ OBJECT_IDENTIFIER { 2.5.29.17 }
 OCTET_STRING {
 SEQUENCE {
 [2 PRIMITIVE] { &amp;#34;localhost&amp;#34; }
-[7 PRIMITIVE] { &amp;#34;127.0.0.1&amp;#34; }
+[7 PRIMITIVE] { `7f000001` }
 }
 }
 }
 &amp;lt;snipped&amp;gt;
-&lt;/code>&lt;/pre>&lt;p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
+&lt;/code>&lt;/pre>&lt;p>If we make that change and then run the text back through &lt;code>ascii2der&lt;/code> we can see
+how &lt;code>openssl x509&lt;/code> would display the proper encoding in textual form. The
+difference is quite subtle!&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>ascii2der -i $PATH_TO_EDITED_TXT | &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> openssl x509 -inform der -noout -text | &lt;span style="color:#ae81ff">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">&lt;/span> grep --after-context&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Subject Alternative Name: &amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;pre tabindex="0">&lt;code>DNS:localhost, IP Address:127.0.0.1
+&lt;/code>&lt;/pre>&lt;p>The observant will note the prefix of the IP address SAN is now shown as &amp;ldquo;IP
+Address:&amp;rdquo;, not &amp;ldquo;IP:&amp;rdquo; like we saw with the malformed cert.&lt;/p>
+&lt;p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
 certificate DER (&lt;code>openssl asn1parse&lt;/code>) but it&amp;rsquo;s lackluster compared to
 &lt;code>der-ascii&lt;/code> and only shows the whole SAN extension as a hex encoded octet
 string. It&amp;rsquo;s also perhaps not a great idea to be piping data expected to be
@@ -220,6 +229,9 @@ consider &lt;a href="https://github.com/rustls/rustls">rustls&lt;/a>. It&amp;rsq
 &lt;ol>
 &lt;li id="fn:1">
 &lt;p>Check out &lt;a href="https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/">A Warm Welcome to ASN.1 and DER&lt;/a> and &lt;a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280&lt;/a> if you&amp;rsquo;re curious about understanding the full &lt;code>der-ascii&lt;/code> output.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2">
+&lt;p>Note that &lt;code>0x7f000001&lt;/code> is the hex encoding of the network-byte-order IPv4 &amp;ldquo;127.0.0.1&amp;rdquo; address.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/div></description></item><item><title>A Beyond-the-basics Rust Flake</title><link>https://log.woodweb.ca/articles/rust-flake/</link><pubDate>Sun, 26 Nov 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/rust-flake/</guid><description>&lt;h1 id="about">About&lt;/h1>

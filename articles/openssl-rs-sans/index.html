@@ -71,19 +71,26 @@ SEQUENCE {
 }
 &lt;snipped&gt;
 </code></pre><p>A valid certificate for both <code>localhost</code> and <code>127.0.0.1</code> should instead have
-a SAN extension like:</p><pre tabindex=0><code>&lt;snipped&gt;
+a SAN extension like<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>:</p><pre tabindex=0><code>&lt;snipped&gt;
 SEQUENCE {
   # subjectAltName
   OBJECT_IDENTIFIER { 2.5.29.17 }
   OCTET_STRING {
     SEQUENCE {
       [2 PRIMITIVE] { &#34;localhost&#34; }
-      [7 PRIMITIVE] { &#34;127.0.0.1&#34; }
+      [7 PRIMITIVE] { `7f000001` }
     }
   }
 }
 &lt;snipped&gt;
-</code></pre><p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
+</code></pre><p>If we make that change and then run the text back through <code>ascii2der</code> we can see
+how <code>openssl x509</code> would display the proper encoding in textual form. The
+difference is quite subtle!</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>ascii2der -i $PATH_TO_EDITED_TXT | <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  openssl x509 -inform der -noout -text | <span style=color:#ae81ff>\
+</span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>    grep --after-context<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> <span style=color:#e6db74>&#34;Subject Alternative Name: &#34;</span>
+</span></span></code></pre></div><pre tabindex=0><code>DNS:localhost, IP Address:127.0.0.1
+</code></pre><p>The observant will note the prefix of the IP address SAN is now shown as &ldquo;IP
+Address:&rdquo;, not &ldquo;IP:&rdquo; like we saw with the malformed cert.</p><p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
 certificate DER (<code>openssl asn1parse</code>) but it&rsquo;s lackluster compared to
 <code>der-ascii</code> and only shows the whole SAN extension as a hex encoded octet
 string. It&rsquo;s also perhaps not a great idea to be piping data expected to be
@@ -112,7 +119,7 @@ crate changed its <code>SubjectAlternativeName</code> builder behaviour, and how
 continues to provide new and exciting ways to shoot your feet off.</p><p>I&rsquo;d be remiss if I didn&rsquo;t close this story by suggesting it might be time to
 reconsider your OpenSSL dependencies.</p><p>For certificate generation needs consider <a href=https://github.com/rustls/rcgen>rcgen</a> for simpler situations, or the
 Rust Crypto project&rsquo;s <a href=https://docs.rs/x509-cert/latest/x509_cert/>x509-cert</a> crate if you have more complex needs. For TLS,
-consider <a href=https://github.com/rustls/rustls>rustls</a>. It&rsquo;s safer, and faster too.</p><p>Your sanity deserves it.</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>Check out <a href=https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/>A Warm Welcome to ASN.1 and DER</a> and <a href=https://www.rfc-editor.org/rfc/rfc5280>RFC 5280</a> if you&rsquo;re curious about understanding the full <code>der-ascii</code> output.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
+consider <a href=https://github.com/rustls/rustls>rustls</a>. It&rsquo;s safer, and faster too.</p><p>Your sanity deserves it.</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>Check out <a href=https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/>A Warm Welcome to ASN.1 and DER</a> and <a href=https://www.rfc-editor.org/rfc/rfc5280>RFC 5280</a> if you&rsquo;re curious about understanding the full <code>der-ascii</code> output.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>Note that <code>0x7f000001</code> is the hex encoding of the network-byte-order IPv4 &ldquo;127.0.0.1&rdquo; address.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
 <a class=border></a><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
 <a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
 <a class=border></a></div><div class=footer-info>2024 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>
