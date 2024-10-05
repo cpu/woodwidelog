@@ -96,8 +96,8 @@ instead:&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Bad:
 &lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">let&lt;/span> example &lt;span style="color:#f92672">=&lt;/span> SubjectAlternativeName::new()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;example.com, www.example.com&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .ip(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1, 8.8.8.8&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .dns(&lt;span style="color:#e6db74">&amp;#34;example.com, DNS:www.example.com&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .ip(&lt;span style="color:#e6db74">&amp;#34;127.0.0.1, IP:8.8.8.8&amp;#34;&lt;/span>)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .build(&lt;span style="color:#f92672">..&lt;/span>.)
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Good:
