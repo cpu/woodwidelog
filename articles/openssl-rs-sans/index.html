@@ -1,7 +1,8 @@
 <!doctype html><html><head lang=en><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>Why is Rust OpenSSL suddenly making invalid SANs? - Wood Wide Log</title><meta name=viewport content="width=device-width,initial-scale=1">
 <meta name=description content='If you have a Rust app that uses the openssl crate to generate
-certificates, and one day out of the blue those certs. are being rejected for
-malformed subject alternative names (SANs) with confusing errors like:
+certificates (or certificate signing requests), and one day out of the blue
+those certs. or CSRs are being rejected for malformed subject alternative names
+(SANs) with confusing errors like:
 
 certificate is valid for example.com, www.example.com, not example.com
 
@@ -10,11 +11,11 @@ or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
 
 Then the root cause is almost certainly that your app was relying on an API quirk
-in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:image" content><meta property="og:url" content="https://log.woodweb.ca/articles/openssl-rs-sans/"><meta property="og:site_name" content="Wood Wide Log"><meta property="og:title" content="Why is Rust OpenSSL suddenly making invalid SANs?"><meta property="og:description" content='If you have a Rust app that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
+in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:image" content><meta property="og:url" content="https://log.woodweb.ca/articles/openssl-rs-sans/"><meta property="og:site_name" content="Wood Wide Log"><meta property="og:title" content="Why is Rust OpenSSL suddenly making invalid SANs?"><meta property="og:description" content='If you have a Rust app that uses the openssl crate to generate certificates (or certificate signing requests), and one day out of the blue those certs. or CSRs are being rejected for malformed subject alternative names (SANs) with confusing errors like:
 certificate is valid for example.com, www.example.com, not example.com
 or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
-Then the root cause is almost certainly that your app was relying on an API quirk in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="articles"><meta property="article:published_time" content="2024-10-05T08:00:00-04:00"><meta property="article:modified_time" content="2024-10-05T08:00:00-04:00"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="Why is Rust OpenSSL suddenly making invalid SANs?"><meta name=twitter:description content='If you have a Rust app that uses the openssl crate to generate certificates, and one day out of the blue those certs. are being rejected for malformed subject alternative names (SANs) with confusing errors like:
+Then the root cause is almost certainly that your app was relying on an API quirk in the openssl crate that went away with a bugfix that landed in 2023.'><meta property="og:locale" content="en_us"><meta property="og:type" content="article"><meta property="article:section" content="articles"><meta property="article:published_time" content="2024-10-05T08:00:00-04:00"><meta property="article:modified_time" content="2024-10-05T08:00:00-04:00"><meta property="og:image" content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://log.woodweb.ca/2022/10/wwl/crow.small.jpg"><meta name=twitter:title content="Why is Rust OpenSSL suddenly making invalid SANs?"><meta name=twitter:description content='If you have a Rust app that uses the openssl crate to generate certificates (or certificate signing requests), and one day out of the blue those certs. or CSRs are being rejected for malformed subject alternative names (SANs) with confusing errors like:
 certificate is valid for example.com, www.example.com, not example.com
 or:
 Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character
@@ -22,8 +23,9 @@ Then the root cause is almost certainly that your app was relying on an API quir
 <a href=/articles>Articles</a>
 <a href=/posts>Archive</a>
 <a href=/about>About</a></nav></header><main><article><div class=title><h1 class=title>Why is Rust OpenSSL suddenly making invalid SANs?</h1><div class=meta>Posted on Oct 5, 2024</div></div><section class=body><p>If you have a Rust app that uses the <a href=https://crates.io/crates/openssl>openssl crate</a> to generate
-certificates, and one day out of the blue those certs. are being rejected for
-malformed subject alternative names (SANs) with confusing errors like:</p><blockquote><p><code>certificate is valid for example.com, www.example.com, not example.com</code></p></blockquote><p>or:</p><blockquote><p><code>Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character</code></p></blockquote><p>Then the root cause is almost certainly that your app was relying on an API quirk
+certificates (or certificate signing requests), and one day out of the blue
+those certs. or CSRs are being rejected for malformed subject alternative names
+(SANs) with confusing errors like:</p><blockquote><p><code>certificate is valid for example.com, www.example.com, not example.com</code></p></blockquote><p>or:</p><blockquote><p><code>Cannot issue for "example.com, dns:www.example.com": Domain name contains an invalid character</code></p></blockquote><p>Then the root cause is almost certainly that your app was relying on an API quirk
 in the <code>openssl</code> crate that went away with a bugfix that landed in 2023.</p><h1 id=the-short-story>The short story</h1><p>While I find the longer story interesting, if you just want to fix your app
 immediately you should:</p><ul><li>Check if you, or a transitive dependency, updated to <code>openssl >= 0.10.48</code>.</li><li>Replace any invocations of <a href=https://docs.rs/openssl/latest/openssl/x509/extension/struct.SubjectAlternativeName.html>SubjectAlternativeName</a> builder fns that were
 provided comma separated values to use one builder invocation per value
@@ -52,12 +54,12 @@ certificate to check its subject alternative names:</p><div class=highlight><pre
 </span></span></span><span style=display:flex><span><span style=color:#ae81ff></span>  grep --after-context<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span> <span style=color:#e6db74>&#34;Subject Alternative Name:&#34;</span>
 </span></span></code></pre></div><p>Which in the case of <a href=https://gist.github.com/cpu/43697ca55fccd04e91f66540ea66ae62>the cert provided</a> in issue 1292, printed:</p><pre tabindex=0><code>    X509v3 Subject Alternative Name:
         DNS:localhost, IP:127.0.0.1, DNS:localhost
-</code></pre><p>The duplicate <code>"localhost"</code> <code>dNSName</code> type SAN stands out, but I&rsquo;ll spoil the
+</code></pre><p>The duplicate <code>"localhost"</code> <code>dNSName</code><sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> type SAN stands out, but I&rsquo;ll spoil the
 surprise a bit and say it&rsquo;s a red herring. The real issue is that OpenSSL&rsquo;s
 text output is a pretty crummy tool for this sort of debugging. It&rsquo;s deceived us
 by not providing any delimiters around each SAN&rsquo;s <code>GeneralName</code> values! What
-appears to be <em>three</em> SANs is actually just <strong>two</strong>.</p><ol><li>One <code>dNSName</code> type general name with the value <code>"localhost, IP:127.0.0.1"</code></li><li>One <code>dnsName</code> type general name with the value <code>"localhost"</code></li></ol><p>You can verify this with a more capable low-level tool like <a href=https://github.com/google/der-ascii>der-ascii</a>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>der2ascii -pem -i $PATH_TO_PEM_CERT
-</span></span></code></pre></div><p>This will print a lot decoded ASN.1 data<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>, but most importantly, the <code>subjectAltName</code>
+appears to be <em>three</em> SANs is actually just <strong>two</strong>.</p><ol><li>One <code>dNSName</code> type general name with the value <code>"localhost, IP:127.0.0.1"</code></li><li>One <code>dNSName</code> type general name with the value <code>"localhost"</code></li></ol><p>You can verify this with a more capable low-level tool like <a href=https://github.com/google/der-ascii>der-ascii</a>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2><code class=language-bash data-lang=bash><span style=display:flex><span>der2ascii -pem -i $PATH_TO_PEM_CERT
+</span></span></code></pre></div><p>This will print a lot decoded ASN.1 data<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>, but most importantly, the <code>subjectAltName</code>
 extension where the invalid SAN problem is easily visible:</p><pre tabindex=0><code>&lt;snipped&gt;
 SEQUENCE {
   # subjectAltName
@@ -71,7 +73,7 @@ SEQUENCE {
 }
 &lt;snipped&gt;
 </code></pre><p>A valid certificate for both <code>localhost</code> and <code>127.0.0.1</code> should instead have
-a SAN extension like<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>:</p><pre tabindex=0><code>&lt;snipped&gt;
+a SAN extension like<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>:</p><pre tabindex=0><code>&lt;snipped&gt;
 SEQUENCE {
   # subjectAltName
   OBJECT_IDENTIFIER { 2.5.29.17 }
@@ -93,7 +95,7 @@ difference is quite subtle!</p><div class=highlight><pre tabindex=0 style=color:
 Address:&rdquo;, not &ldquo;IP:&rdquo; like we saw with the malformed cert.</p><p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
 certificate DER (<code>openssl asn1parse</code>) but it&rsquo;s lackluster compared to
 <code>der-ascii</code> and only shows the whole SAN extension as a hex encoded octet
-string. It&rsquo;s also perhaps not a great idea to be piping data expected to be
+string. It&rsquo;s also perhaps not a great idea to be piping data that might be
 malformed in some way through a tool written in C with a history of memory
 safety vulns in its parsing code&mldr; In contrast, <code>der-ascii</code> is written in Go.</p><p>In either case I think we can all agree this certificate is busted: it has
 a clearly invalid <code>dNSName</code> SAN and no <code>iPAddress</code> SAN at all.</p><h2 id=what-changed>What changed?</h2><p>Knowing the problem with the certificate doesn&rsquo;t explain why certificate
@@ -119,7 +121,7 @@ crate changed its <code>SubjectAlternativeName</code> builder behaviour, and how
 continues to provide new and exciting ways to shoot your feet off.</p><p>I&rsquo;d be remiss if I didn&rsquo;t close this story by suggesting it might be time to
 reconsider your OpenSSL dependencies.</p><p>For certificate generation needs consider <a href=https://github.com/rustls/rcgen>rcgen</a> for simpler situations, or the
 Rust Crypto project&rsquo;s <a href=https://docs.rs/x509-cert/latest/x509_cert/>x509-cert</a> crate if you have more complex needs. For TLS,
-consider <a href=https://github.com/rustls/rustls>rustls</a>. It&rsquo;s safer, and faster too.</p><p>Your sanity deserves it.</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>Check out <a href=https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/>A Warm Welcome to ASN.1 and DER</a> and <a href=https://www.rfc-editor.org/rfc/rfc5280>RFC 5280</a> if you&rsquo;re curious about understanding the full <code>der-ascii</code> output.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>Note that <code>0x7f000001</code> is the hex encoding of the network-byte-order IPv4 &ldquo;127.0.0.1&rdquo; address.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
+consider <a href=https://github.com/rustls/rustls>rustls</a>. It&rsquo;s safer, and faster too.</p><p>Your sanity deserves it.</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>The odd looking casing for <code>dNSName</code> and <code>iPAddress</code> is a quirk of RFC 5280.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>Check out <a href=https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/>A Warm Welcome to ASN.1 and DER</a> and <a href=https://www.rfc-editor.org/rfc/rfc5280>RFC 5280</a> if you&rsquo;re curious about understanding the full <code>der-ascii</code> output.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3><p>Note that <code>0x7f000001</code> is the hex encoding of the network-byte-order IPv4 &ldquo;127.0.0.1&rdquo; address.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></section><div class=post-tags></div></article></main><footer><div style=display:flex><a class=soc href=https://log.woodweb.ca/index.xml title=RSS><i data-feather=rss></i></a>
 <a class=border></a><a class=soc href=https://github.com/cpu/woodwidelog title=GitHub><i data-feather=github></i></a>
 <a class=border></a><a class=soc href=https://twitter.com/cpu/ title=Twitter><i data-feather=twitter></i></a>
 <a class=border></a></div><div class=footer-info>2024 Daniel McCarney</div></footer><script>feather.replace()</script></div></body></html>

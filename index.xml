@@ -74,8 +74,9 @@ related projects please and thank you&amp;hellip;&amp;#160;&lt;a href="#fnref:1"
 &lt;/li>
 &lt;/ol>
 &lt;/div></description></item><item><title>Why is Rust OpenSSL suddenly making invalid SANs?</title><link>https://log.woodweb.ca/articles/openssl-rs-sans/</link><pubDate>Sat, 05 Oct 2024 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/openssl-rs-sans/</guid><description>&lt;p>If you have a Rust app that uses the &lt;a href="https://crates.io/crates/openssl">openssl crate&lt;/a> to generate
-certificates, and one day out of the blue those certs. are being rejected for
-malformed subject alternative names (SANs) with confusing errors like:&lt;/p>
+certificates (or certificate signing requests), and one day out of the blue
+those certs. or CSRs are being rejected for malformed subject alternative names
+(SANs) with confusing errors like:&lt;/p>
 &lt;blockquote>
 &lt;p>&lt;code>certificate is valid for example.com, www.example.com, not example.com&lt;/code>&lt;/p>
 &lt;/blockquote>
@@ -126,18 +127,18 @@ certificate to check its subject alternative names:&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Which in the case of &lt;a href="https://gist.github.com/cpu/43697ca55fccd04e91f66540ea66ae62">the cert provided&lt;/a> in issue 1292, printed:&lt;/p>
 &lt;pre tabindex="0">&lt;code> X509v3 Subject Alternative Name:
 DNS:localhost, IP:127.0.0.1, DNS:localhost
-&lt;/code>&lt;/pre>&lt;p>The duplicate &lt;code>&amp;quot;localhost&amp;quot;&lt;/code> &lt;code>dNSName&lt;/code> type SAN stands out, but I&amp;rsquo;ll spoil the
+&lt;/code>&lt;/pre>&lt;p>The duplicate &lt;code>&amp;quot;localhost&amp;quot;&lt;/code> &lt;code>dNSName&lt;/code>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> type SAN stands out, but I&amp;rsquo;ll spoil the
 surprise a bit and say it&amp;rsquo;s a red herring. The real issue is that OpenSSL&amp;rsquo;s
 text output is a pretty crummy tool for this sort of debugging. It&amp;rsquo;s deceived us
 by not providing any delimiters around each SAN&amp;rsquo;s &lt;code>GeneralName&lt;/code> values! What
 appears to be &lt;em>three&lt;/em> SANs is actually just &lt;strong>two&lt;/strong>.&lt;/p>
 &lt;ol>
 &lt;li>One &lt;code>dNSName&lt;/code> type general name with the value &lt;code>&amp;quot;localhost, IP:127.0.0.1&amp;quot;&lt;/code>&lt;/li>
-&lt;li>One &lt;code>dnsName&lt;/code> type general name with the value &lt;code>&amp;quot;localhost&amp;quot;&lt;/code>&lt;/li>
+&lt;li>One &lt;code>dNSName&lt;/code> type general name with the value &lt;code>&amp;quot;localhost&amp;quot;&lt;/code>&lt;/li>
 &lt;/ol>
 &lt;p>You can verify this with a more capable low-level tool like &lt;a href="https://github.com/google/der-ascii">der-ascii&lt;/a>:&lt;/p>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:2;-o-tab-size:2;tab-size:2;">&lt;code class="language-bash" data-lang="bash">&lt;span style="display:flex;">&lt;span>der2ascii -pem -i $PATH_TO_PEM_CERT
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will print a lot decoded ASN.1 data&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, but most importantly, the &lt;code>subjectAltName&lt;/code>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This will print a lot decoded ASN.1 data&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>, but most importantly, the &lt;code>subjectAltName&lt;/code>
 extension where the invalid SAN problem is easily visible:&lt;/p>
 &lt;pre tabindex="0">&lt;code>&amp;lt;snipped&amp;gt;
 SEQUENCE {
@@ -152,7 +153,7 @@ SEQUENCE {
 }
 &amp;lt;snipped&amp;gt;
 &lt;/code>&lt;/pre>&lt;p>A valid certificate for both &lt;code>localhost&lt;/code> and &lt;code>127.0.0.1&lt;/code> should instead have
-a SAN extension like&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>:&lt;/p>
+a SAN extension like&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>:&lt;/p>
 &lt;pre tabindex="0">&lt;code>&amp;lt;snipped&amp;gt;
 SEQUENCE {
 # subjectAltName
@@ -177,7 +178,7 @@ Address:&amp;rdquo;, not &amp;ldquo;IP:&amp;rdquo; like we saw with the malforme
 &lt;p>OpenSSL also has a way to dump a more accurate ASN.1 representation of the
 certificate DER (&lt;code>openssl asn1parse&lt;/code>) but it&amp;rsquo;s lackluster compared to
 &lt;code>der-ascii&lt;/code> and only shows the whole SAN extension as a hex encoded octet
-string. It&amp;rsquo;s also perhaps not a great idea to be piping data expected to be
+string. It&amp;rsquo;s also perhaps not a great idea to be piping data that might be
 malformed in some way through a tool written in C with a history of memory
 safety vulns in its parsing code&amp;hellip; In contrast, &lt;code>der-ascii&lt;/code> is written in Go.&lt;/p>
 &lt;p>In either case I think we can all agree this certificate is busted: it has
@@ -228,10 +229,13 @@ consider &lt;a href="https://github.com/rustls/rustls">rustls&lt;/a>. It&amp;rsq
 &lt;hr>
 &lt;ol>
 &lt;li id="fn:1">
-&lt;p>Check out &lt;a href="https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/">A Warm Welcome to ASN.1 and DER&lt;/a> and &lt;a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280&lt;/a> if you&amp;rsquo;re curious about understanding the full &lt;code>der-ascii&lt;/code> output.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>The odd looking casing for &lt;code>dNSName&lt;/code> and &lt;code>iPAddress&lt;/code> is a quirk of RFC 5280.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:2">
-&lt;p>Note that &lt;code>0x7f000001&lt;/code> is the hex encoding of the network-byte-order IPv4 &amp;ldquo;127.0.0.1&amp;rdquo; address.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>Check out &lt;a href="https://letsencrypt.org/docs/a-warm-welcome-to-asn1-and-der/">A Warm Welcome to ASN.1 and DER&lt;/a> and &lt;a href="https://www.rfc-editor.org/rfc/rfc5280">RFC 5280&lt;/a> if you&amp;rsquo;re curious about understanding the full &lt;code>der-ascii&lt;/code> output.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3">
+&lt;p>Note that &lt;code>0x7f000001&lt;/code> is the hex encoding of the network-byte-order IPv4 &amp;ldquo;127.0.0.1&amp;rdquo; address.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/div></description></item><item><title>A Beyond-the-basics Rust Flake</title><link>https://log.woodweb.ca/articles/rust-flake/</link><pubDate>Sun, 26 Nov 2023 08:00:00 -0400</pubDate><guid>https://log.woodweb.ca/articles/rust-flake/</guid><description>&lt;h1 id="about">About&lt;/h1>
