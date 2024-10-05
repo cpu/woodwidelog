@@ -98,7 +98,7 @@ compare to the approach I used.
   (_[RFC 6056] source port randomization_) enabling other new attacks.
 
 [chopmall]: https://www.imdb.com/title/tt0090837/
-[microscope]: https://gynvael.coldwind.pl/?lang=en&id=754
+[microscope]: https://asawicki.info/articles/Hello_world_under_the_microscope.php5
 [fingerprinting]: https://lwn.net/SubscriberLink/910435/8edb2c6f835f960a/
 [RFC 6056]: https://www.rfc-editor.org/rfc/rfc6056
 
